@@ -1,6 +1,6 @@
 package com.ustudents.fractals.common.cli.print;
 
-import com.ustudents.fractals.common.BaseProgram;
+import com.ustudents.fractals.common.Program;
 import com.ustudents.fractals.common.cli.print.style.Style;
 import com.ustudents.fractals.common.cli.print.style.TextColor;
 import com.ustudents.fractals.common.utility.Resources;
@@ -19,7 +19,7 @@ import java.util.Date;
 @SuppressWarnings({"unused"})
 public class Out {
     /** The prefix to use for every messages. */
-    private static final String basePrefix = "[" + BaseProgram.getInstanceName().toLowerCase() + "]";
+    private static final String basePrefix = "[" + Program.getInstanceName().toLowerCase() + "]";
 
     /** The prefix to use for every info. */
     private static final String infoPrefix = "[info]";
@@ -93,7 +93,7 @@ public class Out {
             removeOldestLogFile();
             fileOutput = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
                     Resources.getLogsDirectory() +
-                            "/" + BaseProgram.getInstanceName().toLowerCase() +
+                            "/" + Program.getInstanceName().toLowerCase() +
                             "-" + new SimpleDateFormat("yyyy_MM_dd-HH-mm-ss")
                             .format(new Date()) + ".log", false), StandardCharsets.UTF_8)));
         } catch (Exception e) {

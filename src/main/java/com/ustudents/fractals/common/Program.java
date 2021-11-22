@@ -5,14 +5,14 @@ import com.ustudents.fractals.common.cli.option.annotation.Command;
 import com.ustudents.fractals.common.cli.print.Out;
 import com.ustudents.fractals.common.utility.Resources;
 
-public abstract class BaseProgram extends Runnable {
+public abstract class Program extends Runnable {
     /** The name of the game instance. */
     protected static String instanceName = "program";
 
     protected static int exitCode = 0;
 
     /** The game instance. */
-    private static BaseProgram instance;
+    private static Program instance;
 
     /** @return the instance's name. */
     public static String getInstanceName() {
@@ -21,7 +21,7 @@ public abstract class BaseProgram extends Runnable {
 
     @Override
     public int run(String[] args) {
-        BaseProgram.instance = this;
+        Program.instance = this;
 
         if (getClass().getAnnotation(Command.class) != null) {
             instanceName = getClass().getAnnotation(Command.class).name();
@@ -58,7 +58,7 @@ public abstract class BaseProgram extends Runnable {
     }
 
     /** @return the game. */
-    public static BaseProgram get() {
+    public static Program get() {
         return instance;
     }
 }
