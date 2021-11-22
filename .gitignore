@@ -1,0 +1,17 @@
+# Project
+**/logs
+settings.json
+server.json
+
+# macOS
+.DS_Store
+
+# gradlew
+.gradle/
+output/
+
+# Java
+**/build/
+
+# JetBrains
+**/.idea/
