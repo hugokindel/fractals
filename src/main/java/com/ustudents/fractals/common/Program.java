@@ -9,10 +9,8 @@ public abstract class Program extends Runnable {
     /** The name of the game instance. */
     protected static String instanceName = "program";
 
-    protected static int exitCode = 0;
-
     /** The game instance. */
-    private static Program instance;
+    protected static Program instance;
 
     /** @return the instance's name. */
     public static String getInstanceName() {
@@ -34,7 +32,13 @@ public abstract class Program extends Runnable {
         }
 
         initialize();
-        main(args);
+
+        int exitCode = 0;
+
+        if (!showHelp && !showVersion) {
+            exitCode = main(args);
+        }
+
         destroy();
         Out.end();
 
@@ -47,7 +51,7 @@ public abstract class Program extends Runnable {
                "// Have fun!\n\n";
     }
 
-    protected abstract void main(String[] args);
+    protected abstract int main(String[] args);
 
     private void initialize() {
         Resources.loadConfig();

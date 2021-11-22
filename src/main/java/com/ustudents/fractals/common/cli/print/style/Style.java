@@ -1,6 +1,7 @@
 package com.ustudents.fractals.common.cli.print.style;
 
 /** ANSI escape sequences to use in output. */
+@SuppressWarnings({"unused"})
 public class Style {
     /** ANSI escape sequence to reset all values. */
     public static final String Reset = "\u001B[0m";

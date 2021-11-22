@@ -5,13 +5,13 @@ import com.ustudents.fractals.common.cli.option.annotation.Option;
 import com.ustudents.fractals.common.cli.print.Out;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class defines a runnable command, which means it can read arguments back from the CLI and set any @Option
  * attributes. Some syntax is inspired from: https://picocli.info */
-@SuppressWarnings({"unused"})
 public abstract class Runnable {
     /** Option to show the help message. */
     @Option(names = {"-h", "--help"}, description = "Show this help message.")
@@ -43,7 +43,7 @@ public abstract class Runnable {
      * @param <T> The type of the child class.
      */
     protected <T extends Runnable> boolean readArguments(String[] args, Class<T> classWithArgs) {
-        ArrayList<Field> fields = new ArrayList<>(Arrays.asList(Runnable.class.getDeclaredFields()));
+        Set<Field> fields = new HashSet<>(Arrays.asList(Runnable.class.getDeclaredFields()));
         Class<?> currentType = classWithArgs;
         while (currentType != null) {
             fields.addAll(Arrays.asList(currentType.getDeclaredFields()));
@@ -90,6 +90,8 @@ public abstract class Runnable {
             }
         }
 
+        assert classWithArgs != null;
+
         if (showHelp) {
             displayHelp(classWithArgs, fields);
         }
@@ -107,7 +109,7 @@ public abstract class Runnable {
      * @param unknownOption The unknown option.
      * @param fields The fields to search in.
      */
-    private void displayUnknownOption(String unknownOption, ArrayList<Field> fields) {
+    private void displayUnknownOption(String unknownOption, Set<Field> fields) {
         int distance = -1;
         String nearest = "";
 
@@ -148,8 +150,8 @@ public abstract class Runnable {
      * @param fields The list of fields to show.
      * @param <T> The type of the child's class.
      */
-    private <T extends Runnable> void displayHelp(Class<T> classWithArgs, ArrayList<Field> fields) {
-        Out.println("usage: ./" + classWithArgs.getAnnotation(Command.class).name() + " [options...]");
+    private <T extends Runnable> void displayHelp(Class<T> classWithArgs, Set<Field> fields) {
+        Out.println("usage: ./" + classWithArgs.getAnnotation(Command.class).name() + ".jar [options...]");
 
         Out.println();
 

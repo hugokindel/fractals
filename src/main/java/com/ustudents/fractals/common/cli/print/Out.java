@@ -322,7 +322,7 @@ public class Out {
     }
 
     /** Removes the oldest log files in there is more than 8 log files. */
-    private static void removeOldestLogFile() throws Exception {
+    private static void removeOldestLogFile() {
         File[] logFiles = new File(Resources.getLogsDirectory()).listFiles();
 
         if (logFiles == null || logFiles.length < maxNumOfLogFiles) {
