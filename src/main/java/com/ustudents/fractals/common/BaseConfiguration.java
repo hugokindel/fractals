@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @JsonSerializable
-public class BaseConfig {
+public class BaseConfiguration {
     @JsonSerializable(necessary = false)
     public Map<String, Object> global = new LinkedHashMap<>();
 }

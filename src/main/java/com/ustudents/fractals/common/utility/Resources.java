@@ -1,6 +1,6 @@
 package com.ustudents.fractals.common.utility;
 
-import com.ustudents.fractals.common.BaseConfig;
+import com.ustudents.fractals.common.BaseConfiguration;
 import com.ustudents.fractals.common.json.Json;
 
 import java.io.File;
@@ -11,7 +11,7 @@ public class Resources {
     private static final String dataDirectoryName = "data";
     private static final String logsDirectoryName = "logs";
     private static final String settingsFilename = "settings.json";
-    private static BaseConfig config = null;
+    private static BaseConfiguration config = null;
 
     /**
      * Gets the data directory's path.
@@ -55,9 +55,9 @@ public class Resources {
                 File file = new File(getDataDirectory() + "/" + settingsFilename);
 
                 if (file.exists()) {
-                    config = Json.deserialize(getDataDirectory() + "/" + settingsFilename, BaseConfig.class);
+                    config = Json.deserialize(getDataDirectory() + "/" + settingsFilename, BaseConfiguration.class);
                 } else {
-                    config = new BaseConfig();
+                    config = new BaseConfiguration();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -76,7 +76,7 @@ public class Resources {
         }
     }
 
-    public static BaseConfig getConfig() {
+    public static BaseConfiguration getConfig() {
         return config;
     }
 }
