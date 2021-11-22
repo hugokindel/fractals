@@ -27,6 +27,10 @@ public class Fractals extends Program {
         Out.println("Hello, World!");
         Out.println(String.format("Current used view: %s", View.values()[view.ordinal()]));
 
+        if (view == View.Gui) {
+            FractalsFX.launchGui();
+        }
+
         return 0;
     }
 }

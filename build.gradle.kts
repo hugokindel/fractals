@@ -1,14 +1,20 @@
-plugins {
-    id("com.github.johnrengelman.shadow").version("7.1.0")
-    java
-    application
-}
-
 group = "com.ustudents"
 version = "1.0"
 
+plugins {
+    java
+    application
+    id("com.github.johnrengelman.shadow").version("7.1.0")
+    id("org.openjfx.javafxplugin").version("0.0.9")
+}
+
 repositories {
     mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
 }
 
 dependencies {
@@ -16,6 +22,11 @@ dependencies {
     
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
+}
+
+javafx {
+    version = "17"
+    modules("javafx.controls")
 }
 
 tasks {
@@ -60,9 +71,3 @@ if (project.gradle.startParameter.taskNames.contains("run") && System.getPropert
     jvmOptions.add("-Dide=JetBrains")
 }
 application.applicationDefaultJvmArgs = jvmOptions
-
-// Set minimal JDK version.
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
