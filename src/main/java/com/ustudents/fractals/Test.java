@@ -35,6 +35,9 @@ public class Test {
         // methode de coloration de pixel en fonction de la divergence
         // eventuellement du fichier pour sauvegarder l'image
 
+        // constante c, fonction f, rectangle dans plan complexe
+        // et pas de discrétisation donnés par utilisateur
+
         // constante c et fonction f
         //Complexe c = new Complexe(-0.7269,0.1889);
         Complexe c = new Complexe(0.285,0.01);
@@ -61,6 +64,12 @@ public class Test {
         var img = new BufferedImage(l,h,BufferedImage.TYPE_INT_RGB);
 
         // coloration de tous les pixels TODO multithreading avec ForkJoinPool
+
+        // faire classe JuliaThread ? avec un builder et on donne en argument
+        // point de depart (en bas a gauche du rectangle), fonction f,
+        // methode de coloration et coordonnée du pixel
+        // (ils sont dans l'ordre d'utilisation)
+
         for (int x = 0 ; x < h; x++){
             for (int y = 0 ; y < l; y++){
 
