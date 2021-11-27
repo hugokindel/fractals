@@ -7,10 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Function;
 
-
+// TODO : organiser le proceder avec des classes et pouvoir choisir les arguments
 
 public class Test {
 
+    // modifiable par l'utilisateur mais doit avoir valeur par defaut
     static int MAX_ITER = 1000;
     static int RADIUS = 2;
 
@@ -60,6 +61,9 @@ public class Test {
         int h = (int)(hauteur/pas);
         int l = (int)(longueur/pas);
 
+        // modifiable par l'utilisateur
+        // mais peut etre calculer par defaut grace au
+        // rectangle dans l'espace complexe
         //creation de l'image
         var img = new BufferedImage(l,h,BufferedImage.TYPE_INT_RGB);
 
