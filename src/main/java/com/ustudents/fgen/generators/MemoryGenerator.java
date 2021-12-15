@@ -2,7 +2,7 @@ package com.ustudents.fgen.generators;
 
 import com.ustudents.fgen.handlers.CalculationHandler;
 
-public abstract class MemoryGenerator {
+public class MemoryGenerator {
     public CalculationHandler handler;
     public int width;
     public int height;
