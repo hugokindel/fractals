@@ -6,17 +6,17 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-public class JpegGenerator extends BufferedImageGenerator {
+public class JpegGenerator extends SingleImageGenerator {
     public String path;
 
-    public JpegGenerator(CalculationHandler handler, int width, int height, String path) {
-        super(handler, width, height);
+    public JpegGenerator(CalculationHandler handler, String path) {
+        super(handler);
         this.path = path;
     }
 
     @Override
-    public void generate() {
-        super.generate();
+    public void generate(int width, int height) {
+        super.generate(width, height);
 
         File file = new File(path);
 

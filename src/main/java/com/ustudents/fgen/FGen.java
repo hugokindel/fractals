@@ -23,20 +23,20 @@ public class FGen extends Program {
             /*Fractal fractal = new MandelbrotSet(new Complex(0.285, 0.01));
             ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
             CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
-            Generator generator = new JpegGenerator(handler, 4096, 4096, "fractal.jpeg");
-            generator.generate();*/
+            Generator generator = new JpegGenerator(handler, "fractal.jpeg");
+            generator.generate(4096, 4096);*/
 
-            GifGenerator generator = new GifGenerator(4096, 4096, "fractal.gif", 100, true);
+            GifGenerator generator = new GifGenerator("fractal.gif", 100, true);
 
             for (int i = 0; i < 10; i++) {
                 Fractal fractal = new JuliaSet(new Complex(0.285 + i * 0.01, 0.01));
-                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
+                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001 + i * 0.001);
                 CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
 
                 generator.addCalculationHandler(handler);
             }
 
-            generator.generate();
+            generator.generate(4096, 4096);
         }
 
         return 0;

@@ -5,16 +5,16 @@ import com.ustudents.fgen.handlers.CalculationHandler;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class BufferedImageGenerator extends MemoryGenerator {
-    protected BufferedImage image;
+public class SingleImageGenerator extends SingleMemoryGenerator {
+    public BufferedImage image;
 
-    public BufferedImageGenerator(CalculationHandler handler, int width, int height) {
-        super(handler, width, height);
+    public SingleImageGenerator(CalculationHandler handler) {
+        super(handler);
     }
 
     @Override
-    public void generate() {
-        super.generate();
+    public void generate(int width, int height) {
+        super.generate(width, height);
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
