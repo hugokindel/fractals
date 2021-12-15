@@ -22,9 +22,13 @@ public class GifGenerator extends ListImageGenerator {
     public void generate(int width, int height) {
         super.generate(width, height);
 
+        if (bufferedImages.length == 0) {
+            return;
+        }
+
         try {
             ImageOutputStream output = new FileImageOutputStream(new File(path));
-            GifSequenceWriter writer = new GifSequenceWriter(output, bufferedImages[0].getType(), msBetweenFrames, loopContinuously);
+            GifSequenceWriter writer = new GifSequenceWriter(output, bufferedImages[0], msBetweenFrames, loopContinuously);
 
             for (BufferedImage bufferedImage : bufferedImages) {
                 writer.writeToSequence(bufferedImage);

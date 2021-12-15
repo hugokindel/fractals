@@ -2,12 +2,11 @@ package com.ustudents.fgen.generators;
 
 import com.ustudents.fgen.handlers.CalculationHandler;
 
-public class SingleMemoryGenerator extends Generator {
-    public CalculationHandler handler;
+public class SingleMemoryGenerator extends SingleGenerator {
     public int[][] divergenceIndexes;
 
     public SingleMemoryGenerator(CalculationHandler handler) {
-        this.handler = handler;
+        super(handler);
     }
 
     public void generate(int width, int height) {

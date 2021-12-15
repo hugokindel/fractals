@@ -30,7 +30,7 @@ public class FGen extends Program {
 
             for (int i = 0; i < 10; i++) {
                 Fractal fractal = new JuliaSet(new Complex(0.285 + i * 0.01, 0.01));
-                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001 + i * 0.001);
+                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
                 CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
 
                 generator.addCalculationHandler(handler);

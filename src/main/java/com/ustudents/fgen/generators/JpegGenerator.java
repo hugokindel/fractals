@@ -21,7 +21,7 @@ public class JpegGenerator extends SingleImageGenerator {
         File file = new File(path);
 
         try {
-            ImageIO.write(image, "jpeg", file);
+            ImageIO.write(bufferedImage, "jpeg", file);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -21,7 +21,7 @@ public class PngGenerator extends SingleImageGenerator {
         File file = new File(path);
 
         try {
-            ImageIO.write(image, "png", file);
+            ImageIO.write(bufferedImage, "png", file);
         } catch (IOException e) {
             e.printStackTrace();
         }
