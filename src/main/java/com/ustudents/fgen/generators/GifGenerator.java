@@ -1,5 +1,6 @@
 package com.ustudents.fgen.generators;
 
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.utils.GifSequenceWriter;
 
 import javax.imageio.stream.FileImageOutputStream;
