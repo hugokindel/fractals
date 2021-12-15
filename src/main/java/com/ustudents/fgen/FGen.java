@@ -4,9 +4,7 @@ import com.ustudents.fgen.common.Program;
 import com.ustudents.fgen.common.options.Command;
 import com.ustudents.fgen.common.options.Option;
 import com.ustudents.fgen.fractals.*;
-import com.ustudents.fgen.generators.JpegGenerator;
-import com.ustudents.fgen.generators.MemoryGenerator;
-import com.ustudents.fgen.generators.PngGenerator;
+import com.ustudents.fgen.generators.*;
 import com.ustudents.fgen.handlers.CalculationHandler;
 import com.ustudents.fgen.handlers.SingleCalculationHandler;
 import com.ustudents.fgen.maths.Complex;
@@ -22,10 +20,21 @@ public class FGen extends Program {
         if (viewString.equals("gui")) {
             FGenGui.launchFgen(args);
         } else {
-            Fractal fractal = new MandelbrotSet(new Complex(0.285, 0.01));
+            /*Fractal fractal = new MandelbrotSet(new Complex(0.285, 0.01));
             ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
             CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
-            MemoryGenerator generator = new JpegGenerator(handler, 4096, 4096, "fractal.jpeg");
+            Generator generator = new JpegGenerator(handler, 4096, 4096, "fractal.jpeg");
+            generator.generate();*/
+
+            GifGenerator generator = new GifGenerator(4096, 4096, "fractal.gif", 100, true);
+
+            for (int i = 0; i < 10; i++) {
+                Fractal fractal = new JuliaSet(new Complex(0.285 + i * 0.01, 0.01));
+                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
+                CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
+
+                generator.addCalculationHandler(handler);
+            }
 
             generator.generate();
         }
