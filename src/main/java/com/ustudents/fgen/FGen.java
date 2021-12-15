@@ -7,16 +7,25 @@ import com.ustudents.fgen.common.options.Command;
 import com.ustudents.fgen.common.options.Option;
 import com.ustudents.fgen.fractals.*;
 import com.ustudents.fgen.generators.*;
-import com.ustudents.fgen.handlers.CalculationHandler;
-import com.ustudents.fgen.handlers.PoolCalculationHandler;
-import com.ustudents.fgen.handlers.SingleCalculationHandler;
+import com.ustudents.fgen.handlers.calculation.CalculationHandler;
+import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
+import com.ustudents.fgen.handlers.calculation.SimpleCalculationHandler;
+import com.ustudents.fgen.handlers.image.ImageHandler;
+import com.ustudents.fgen.handlers.image.PoolImageHandler;
+import com.ustudents.fgen.handlers.image.SimpleImageHandler;
 import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
+
+import java.time.Duration;
 
 @Command(name = "fgen", version = "1.0.0", description = "A tool to generate various fractals.")
 public class FGen extends Program {
     @Option(names = {"--view"}, description = "Defines which type of view to use.", usage = "<gui> or <cli>")
     protected static String viewString = "cli";
+
+    public static Duration calculationHandlerDuration = Duration.ZERO;
+    public static Duration imageHandlerDuration = Duration.ZERO;
+    public static Duration gifCreation = Duration.ZERO;
 
     @Override
     protected int main(String[] args) {
@@ -26,23 +35,27 @@ public class FGen extends Program {
             /*Benchmark benchmark = new Benchmark();
             Fractal fractal = new JuliaSet(new Complex(0.285, 0.01));
             ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
-            //CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
-            CalculationHandler handler = new PoolCalculationHandler(fractal, plane, 1000, 2);
-            Generator generator = new JpegGenerator(handler, "fractal.jpeg");
+            //CalculationHandler calculationHandler = new SingleCalculationHandler(fractal, plane, 1000, 2);
+            CalculationHandler calculationHandler = new PoolCalculationHandler(fractal, plane, 1000, 2);
+            Generator generator = new JpegGenerator(calculationHandler, "fractal.jpeg");
             generator.generate(4096, 4096);
             System.out.println(benchmark.end());*/
 
-            Benchmark benchmark = new Benchmark();
-            ListGenerator generator = new ListMemoryGenerator();
-            for (int i = 0; i < 10; i++) {
-                Fractal fractal = new JuliaSet(new Complex(0.285 + i * 0.01, 0.01));
+            ListImageGenerator generator = new ListImageGenerator();
+            for (int i = 0; i < 100; i++) {
+                Fractal fractal = new JuliaSet(new Complex(-0.7269, 0.1889));
                 ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
-                CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
-                //CalculationHandler handler = new PoolCalculationHandler(fractal, plane, 1000, 2);
-                generator.addCalculationHandler(handler);
+                //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
+                //ImageHandler imageHandler = new SimpleImageHandler();
+                CalculationHandler calculationHandler = new PoolCalculationHandler(fractal, plane, 1000, 2);
+                ImageHandler imageHandler = new SimpleImageHandler();
+                JpegGenerator jpegGenerator = new JpegGenerator(calculationHandler, imageHandler, "fgen-" + i + ".jpeg");
+                jpegGenerator.generate(201, 201);
             }
-            generator.generate(4096, 4096);
-            System.out.println(benchmark.end());
+
+            Out.println(String.format("CalculationHandler %s", calculationHandlerDuration));
+            Out.println(String.format("ImageHandler %s", imageHandlerDuration));
+            Out.println(String.format("GifCreation %s", gifCreation));
         }
 
         return 0;

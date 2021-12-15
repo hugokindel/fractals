@@ -5,10 +5,10 @@ public class ListMemoryGenerator extends ListGenerator {
 
     @Override
     public void generate(int width, int height) {
-        divergenceIndexesPerHandler = new int[handlers.size()][height][width];
+        divergenceIndexesPerHandler = new int[calculationHandlers.size()][height][width];
 
-        for (int i = 0; i < handlers.size(); i++) {
-            SingleMemoryGenerator generator = new SingleMemoryGenerator(handlers.get(i));
+        for (int i = 0; i < calculationHandlers.size(); i++) {
+            SingleMemoryGenerator generator = new SingleMemoryGenerator(calculationHandlers.get(i));
             generator.generate(width, height);
             divergenceIndexesPerHandler[i] = generator.divergenceIndexes;
         }

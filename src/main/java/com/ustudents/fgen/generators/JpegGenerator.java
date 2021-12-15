@@ -1,6 +1,7 @@
 package com.ustudents.fgen.generators;
 
-import com.ustudents.fgen.handlers.CalculationHandler;
+import com.ustudents.fgen.handlers.calculation.CalculationHandler;
+import com.ustudents.fgen.handlers.image.ImageHandler;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -9,8 +10,8 @@ import java.io.IOException;
 public class JpegGenerator extends SingleImageGenerator {
     public String path;
 
-    public JpegGenerator(CalculationHandler handler, String path) {
-        super(handler);
+    public JpegGenerator(CalculationHandler calculationHandler, ImageHandler imageHandler, String path) {
+        super(calculationHandler, imageHandler);
         this.path = path;
     }
 

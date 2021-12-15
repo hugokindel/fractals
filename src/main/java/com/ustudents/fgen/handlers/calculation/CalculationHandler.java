@@ -1,4 +1,4 @@
-package com.ustudents.fgen.handlers;
+package com.ustudents.fgen.handlers.calculation;
 
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.maths.Complex;

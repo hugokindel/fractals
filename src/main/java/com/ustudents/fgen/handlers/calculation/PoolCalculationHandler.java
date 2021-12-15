@@ -1,5 +1,6 @@
-package com.ustudents.fgen.handlers;
+package com.ustudents.fgen.handlers.calculation;
 
+import com.ustudents.fgen.common.utils.Pool;
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
@@ -11,9 +12,7 @@ import java.util.function.Function;
 public class PoolCalculationHandler extends CalculationHandler {
     public static final int DEFAULT_PARALLELISM_THRESHOLD = 16192;
 
-    public static ForkJoinPool pool = null;
-
-    public class CalculationTask extends RecursiveAction {
+    private class CalculationTask extends RecursiveAction {
         int startIndex;
         int endIndex;
         int width;
@@ -79,26 +78,13 @@ public class PoolCalculationHandler extends CalculationHandler {
 
     @Override
     public int[][] calculateDivergenceIndexes(int width, int height) {
-        verifyPoolStatus();
-
         int[][] divergenceIndexes = new int[height][width];
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
         CalculationTask work = new CalculationTask(0, width * height, width, height, originX, originY, divergenceIndexes);
 
-        pool.invoke(work);
+        Pool.get(parallelismLevel).invoke(work);
 
         return divergenceIndexes;
-    }
-
-    private void verifyPoolStatus() {
-        if (pool != null && pool.getParallelism() != parallelismLevel) {
-            pool.shutdown();
-            pool = null;
-        }
-
-        if (pool == null) {
-            pool = new ForkJoinPool(parallelismLevel);
-        }
     }
 }

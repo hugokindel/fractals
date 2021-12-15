@@ -1,29 +1,27 @@
 package com.ustudents.fgen.generators;
 
-import com.ustudents.fgen.handlers.CalculationHandler;
+import com.ustudents.fgen.FGen;
+import com.ustudents.fgen.common.benchmark.Benchmark;
+import com.ustudents.fgen.common.logs.Out;
+import com.ustudents.fgen.handlers.calculation.CalculationHandler;
+import com.ustudents.fgen.handlers.image.ImageHandler;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class SingleImageGenerator extends SingleMemoryGenerator {
     public BufferedImage bufferedImage;
+    ImageHandler imageHandler;
 
-    public SingleImageGenerator(CalculationHandler handler) {
-        super(handler);
+    public SingleImageGenerator(CalculationHandler calculationHandler, ImageHandler imageHandler) {
+        super(calculationHandler);
+        this.imageHandler = imageHandler;
     }
 
     @Override
     public void generate(int width, int height) {
         super.generate(width, height);
-
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-        for (int y = 0 ; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int index = divergenceIndexes[y][x];
-                int color = Color.HSBtoRGB((float)index / handler.maxIterations, 0.7f, 0.7f);
-                bufferedImage.setRGB(x, y, color);
-            }
-        }
+        Benchmark benchmark = new Benchmark();
+        bufferedImage = imageHandler.fillImage(divergenceIndexes, calculationHandler.maxIterations);
+        FGen.imageHandlerDuration = FGen.imageHandlerDuration.plus(benchmark.end());
     }
 }
