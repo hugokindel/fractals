@@ -1,4 +1,8 @@
-package com.ustudents.fgen.fractals;
+package com.ustudents.fgen.handlers;
+
+import com.ustudents.fgen.fractals.Fractal;
+import com.ustudents.fgen.maths.Complex;
+import com.ustudents.fgen.maths.ComplexPlane;
 
 import java.util.function.Function;
 

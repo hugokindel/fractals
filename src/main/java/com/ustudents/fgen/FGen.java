@@ -4,6 +4,13 @@ import com.ustudents.fgen.common.Program;
 import com.ustudents.fgen.common.options.Command;
 import com.ustudents.fgen.common.options.Option;
 import com.ustudents.fgen.fractals.*;
+import com.ustudents.fgen.generators.JpegGenerator;
+import com.ustudents.fgen.generators.MemoryGenerator;
+import com.ustudents.fgen.generators.PngGenerator;
+import com.ustudents.fgen.handlers.CalculationHandler;
+import com.ustudents.fgen.handlers.SingleCalculationHandler;
+import com.ustudents.fgen.maths.Complex;
+import com.ustudents.fgen.maths.ComplexPlane;
 
 @Command(name = "fractals", version = "1.0.0", description = "A tool to generate various fractals.")
 public class FGen extends Program {
@@ -18,7 +25,7 @@ public class FGen extends Program {
             Fractal fractal = new MandelbrotSet(new Complex(0.285, 0.01));
             ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
             CalculationHandler handler = new SingleCalculationHandler(fractal, plane, 1000, 2);
-            PngGenerator generator = new PngGenerator(handler, 4096, 4096, "fractal.png");
+            MemoryGenerator generator = new JpegGenerator(handler, 4096, 4096, "fractal.jpeg");
 
             generator.generate();
         }

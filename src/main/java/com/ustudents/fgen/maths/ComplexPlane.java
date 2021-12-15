@@ -1,4 +1,4 @@
-package com.ustudents.fgen.fractals;
+package com.ustudents.fgen.maths;
 
 public class ComplexPlane {
     private Complex start;

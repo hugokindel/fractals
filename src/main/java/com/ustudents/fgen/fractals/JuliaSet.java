@@ -1,5 +1,8 @@
 package com.ustudents.fgen.fractals;
 
+import com.ustudents.fgen.maths.Complex;
+import com.ustudents.fgen.maths.ComplexPlane;
+
 import java.util.function.Function;
 
 public class JuliaSet extends Fractal {

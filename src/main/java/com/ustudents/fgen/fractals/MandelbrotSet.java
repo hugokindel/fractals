@@ -1,5 +1,8 @@
 package com.ustudents.fgen.fractals;
 
+import com.ustudents.fgen.maths.Complex;
+import com.ustudents.fgen.maths.ComplexPlane;
+
 public class MandelbrotSet extends JuliaSet {
     public MandelbrotSet(Complex c) {
         super(c);

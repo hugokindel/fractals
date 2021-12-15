@@ -1,4 +1,4 @@
-package com.ustudents.fgen.fractals;
+package com.ustudents.fgen.maths;
 
 public class Complex implements Cloneable {
     public double real;
