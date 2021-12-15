@@ -6,7 +6,7 @@ public class MemoryGenerator {
     public CalculationHandler handler;
     public int width;
     public int height;
-    protected int[][] divergenceIndexes;
+    public int[][] divergenceIndexes;
 
     public MemoryGenerator(CalculationHandler handler, int width, int height) {
         this.handler = handler;
