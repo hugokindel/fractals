@@ -1,20 +1,12 @@
 package com.ustudents.fgen.fractals;
 
 public class Complex implements Cloneable {
-    private double real;
-    private double imaginary;
+    public double real;
+    public double imaginary;
 
     public Complex(double real, double imaginary) {
         this.real = real;
         this.imaginary = imaginary;
-    }
-
-    public double getReal() {
-        return real;
-    }
-
-    public double getImaginary() {
-        return imaginary;
     }
 
     public double getModulus() {

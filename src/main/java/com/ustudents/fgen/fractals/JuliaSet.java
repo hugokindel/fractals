@@ -3,7 +3,7 @@ package com.ustudents.fgen.fractals;
 import java.util.function.Function;
 
 public class JuliaSet extends Fractal {
-    public Complex c;
+    protected Complex c;
 
     public JuliaSet(Complex c) {
         this.c = c;

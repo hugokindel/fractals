@@ -1,14 +1,12 @@
 package com.ustudents.fgen.fractals;
 
-import javafx.util.Pair;
-
 import java.util.function.Function;
 
 public abstract class CalculationHandler {
-    private ComplexPlane plane;
-    private Fractal fractal;
-    private int maxIterations;
-    private int radius;
+    public ComplexPlane plane;
+    public Fractal fractal;
+    public int maxIterations;
+    public int radius;
 
     public CalculationHandler(Fractal fractal, ComplexPlane plane, int maxIterations, int radius) {
         this.fractal = fractal;
@@ -29,37 +27,5 @@ public abstract class CalculationHandler {
         }
 
         return n;
-    }
-
-    public ComplexPlane getPlane() {
-        return plane;
-    }
-
-    public void setPlane(ComplexPlane plane) {
-        this.plane = plane;
-    }
-
-    public void setFractal(Fractal fractal) {
-        this.fractal = fractal;
-    }
-
-    public void setMaxIterations(int maxIterations) {
-        this.maxIterations = maxIterations;
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
-    }
-
-    public Fractal getFractal() {
-        return fractal;
-    }
-
-    public int getMaxIterations() {
-        return maxIterations;
-    }
-
-    public int getRadius() {
-        return radius;
     }
 }

@@ -66,7 +66,7 @@ public class ComplexPlane {
     }
 
     private void calculateViewSize() {
-        this.viewWidth = (int)(Math.abs(end.getReal() - start.getReal()) / zoom);
-        this.viewHeight = (int)(Math.abs(end.getImaginary() - start.getImaginary()) / zoom);
+        this.viewWidth = (int)(Math.abs(end.real - start.real) / zoom);
+        this.viewHeight = (int)(Math.abs(end.imaginary - start.imaginary) / zoom);
     }
 }

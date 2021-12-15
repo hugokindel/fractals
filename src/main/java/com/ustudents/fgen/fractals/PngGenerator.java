@@ -26,7 +26,7 @@ public class PngGenerator extends Generator {
         for (int y = 0 ; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int index = divergenceIndexes[y][x];
-                int color = Color.HSBtoRGB((float)index / handler.getMaxIterations(), 0.7f, 0.7f);
+                int color = Color.HSBtoRGB((float)index / handler.maxIterations, 0.7f, 0.7f);
                 image.setRGB(x, y, color);
             }
         }
