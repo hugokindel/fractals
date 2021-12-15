@@ -1,1 +1,1 @@
-rootProject.name = "fractals"
+rootProject.name = "fgen"

@@ -15,3 +15,6 @@ output/
 
 # JetBrains
 **/.idea/
+
+# Fractals
+*.png

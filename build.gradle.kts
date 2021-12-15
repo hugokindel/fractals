@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 group = "com.ustudents"
 version = "1.0"
 
@@ -5,7 +7,6 @@ plugins {
     java
     application
     id("com.github.johnrengelman.shadow").version("7.1.0")
-    id("org.openjfx.javafxplugin").version("0.0.9")
 }
 
 repositories {
@@ -18,15 +19,29 @@ java {
 }
 
 dependencies {
+    val os: OperatingSystem = OperatingSystem.current()
+    var platform = ""
+    when {
+        os.isWindows -> {
+            platform = "win"
+        }
+        os.isLinux -> {
+            platform = "linux"
+        }
+        os.isMacOsX -> {
+            platform = "mac"
+        }
+    }
+
     val jUnitVersion: String by project
-    
+    val javaFxVersion: String by project
+
+    implementation("org.openjfx:javafx-base:$javaFxVersion:$platform")
+    implementation("org.openjfx:javafx-controls:$javaFxVersion:$platform")
+    implementation("org.openjfx:javafx-graphics:$javaFxVersion:$platform")
+    implementation("org.openjfx:javafx-fxml:$javaFxVersion:$platform")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
-}
-
-javafx {
-    version = "17"
-    modules("javafx.controls")
 }
 
 tasks {
@@ -47,13 +62,13 @@ tasks {
     // Set main class to use after a .jar build.
     jar {
         manifest {
-            attributes("Main-Class" to "com.ustudents.fractals.Main")
+            attributes("Main-Class" to "com.ustudents.fgen.Main")
         }
     }
 }
 
-// Set main class to use when launching as an application.
-application.mainClass.set("com.ustudents.fractals.Main")
+application.mainClass.set("com.ustudents.fgen.Main")
+application.mainModule.set("com.ustudents.fgen")
 
 // Changes the standard input (useful because Gradle can hide the input in some cases).
 val run by tasks.getting(JavaExec::class) {
