@@ -18,22 +18,14 @@ public class StreamCalculationHandler extends CalculationHandler{
 
     @Override
     public int[][] computeDivergenceIndexes(int width, int height, double offsetX, double offsetY) {
-        Complex[][] complexesIndexes = new Complex[height][width];
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
 
-        for (int y = 0 ; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                Complex z0 = fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
-                complexesIndexes[y][x] = z0;
-            }
-        }
-
-        return range(0, complexesIndexes.length)
+        return range(0, height)
                 .parallel()
-                .mapToObj(x -> Arrays.stream(complexesIndexes[x])
+                .mapToObj(y -> range(0, width)
                         .parallel()
-                        .mapToInt(z0 -> computeDivergenceIndex(z0, fractal.getF()))
+                        .map(x -> computeDivergenceIndex(fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY), fractal.getF()))
                         .toArray())
                 .toArray(int[][]::new);
     }
