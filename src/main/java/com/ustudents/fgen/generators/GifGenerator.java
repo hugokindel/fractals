@@ -22,8 +22,8 @@ public class GifGenerator extends ListImageGenerator {
         this.loopContinuously = loopContinuously;
     }
 
-    public void generate(int width, int height) {
-        super.generate(width, height);
+    public void generate(int width, int height, double offsetX, double offsetY) {
+        super.generate(width, height, offsetX, offsetY);
 
         if (bufferedImages.length == 0) {
             return;

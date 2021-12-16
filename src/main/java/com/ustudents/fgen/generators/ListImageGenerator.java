@@ -24,12 +24,12 @@ public class ListImageGenerator extends ListGenerator {
     }
 
     @Override
-    public void generate(int width, int height) {
+    public void generate(int width, int height, double offsetX, double offsetY) {
         bufferedImages = new BufferedImage[calculationHandlers.size()];
 
         for (int i = 0; i < calculationHandlers.size(); i++) {
             SingleImageGenerator generator = new SingleImageGenerator(calculationHandlers.get(i), imageHandlers.get(i));
-            generator.generate(width, height);
+            generator.generate(width, height, offsetX, offsetY);
             bufferedImages[i] = generator.bufferedImage;
         }
     }

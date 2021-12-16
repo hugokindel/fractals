@@ -1,7 +1,6 @@
 package com.ustudents.fgen;
 
 import com.ustudents.fgen.common.Program;
-import com.ustudents.fgen.common.benchmark.Benchmark;
 import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.options.Command;
 import com.ustudents.fgen.common.options.Option;
@@ -9,9 +8,7 @@ import com.ustudents.fgen.fractals.*;
 import com.ustudents.fgen.generators.*;
 import com.ustudents.fgen.handlers.calculation.CalculationHandler;
 import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
-import com.ustudents.fgen.handlers.calculation.SimpleCalculationHandler;
 import com.ustudents.fgen.handlers.image.ImageHandler;
-import com.ustudents.fgen.handlers.image.PoolImageHandler;
 import com.ustudents.fgen.handlers.image.SimpleImageHandler;
 import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
@@ -42,15 +39,15 @@ public class FGen extends Program {
             System.out.println(benchmark.end());*/
 
             ListImageGenerator generator = new ListImageGenerator();
-            for (int i = 0; i < 100; i++) {
-                Fractal fractal = new JuliaSet(new Complex(-0.7269, 0.1889));
-                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001);
+            for (int i = 0; i < 10; i++) {
+                Fractal fractal = new JuliaSet(new Complex(0.3, 0.5));
+                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001 + i * 0.001);
                 //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
                 //ImageHandler imageHandler = new SimpleImageHandler();
                 CalculationHandler calculationHandler = new PoolCalculationHandler(fractal, plane, 1000, 2);
                 ImageHandler imageHandler = new SimpleImageHandler();
                 JpegGenerator jpegGenerator = new JpegGenerator(calculationHandler, imageHandler, "fgen-" + i + ".jpeg");
-                jpegGenerator.generate(201, 201);
+                jpegGenerator.generate(4096, 4096, 1024, 1024);
             }
 
             Out.println(String.format("CalculationHandler %s", calculationHandlerDuration));

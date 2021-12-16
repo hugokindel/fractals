@@ -13,8 +13,8 @@ public class JuliaSet extends Fractal {
     }
 
     @Override
-    public Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY) {
-        return new Complex(originX + plane.getZoom() * x, originY - plane.getZoom() * y);
+    public Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY) {
+        return new Complex(originX + plane.getZoom() * (x - offsetX), originY - plane.getZoom() * (y - offsetY));
     }
 
     @Override

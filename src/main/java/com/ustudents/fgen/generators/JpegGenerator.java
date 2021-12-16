@@ -16,8 +16,8 @@ public class JpegGenerator extends SingleImageGenerator {
     }
 
     @Override
-    public void generate(int width, int height) {
-        super.generate(width, height);
+    public void generate(int width, int height, double offsetX, double offsetY) {
+        super.generate(width, height, offsetX, offsetY);
 
         File file = new File(path);
 

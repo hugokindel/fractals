@@ -19,7 +19,7 @@ public abstract class CalculationHandler {
         this.radius = radius;
     }
 
-    public abstract int[][] calculateDivergenceIndexes(int width, int height);
+    public abstract int[][] calculateDivergenceIndexes(int width, int height, double offsetX, double offsetY);
 
     protected int calculateDivergenceIndex(Complex z0, Function<Complex, Complex> f) {
         int n = 0;

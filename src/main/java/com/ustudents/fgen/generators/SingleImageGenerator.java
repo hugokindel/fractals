@@ -18,8 +18,9 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
     }
 
     @Override
-    public void generate(int width, int height) {
-        super.generate(width, height);
+    public void generate(int width, int height, double offsetX, double offsetY) {
+        super.generate(width, height, offsetX, offsetY);
+
         Benchmark benchmark = new Benchmark();
         bufferedImage = imageHandler.fillImage(divergenceIndexes, calculationHandler.maxIterations);
         FGen.imageHandlerDuration = FGen.imageHandlerDuration.plus(benchmark.end());

@@ -19,15 +19,20 @@ public class PoolCalculationHandler extends CalculationHandler {
         int height;
         double originX;
         double originY;
+        double offsetX;
+        double offsetY;
+
         int[][] results;
 
-        public CalculationTask(int startIndex, int endIndex, int width, int height, double originX, double originY, int[][] results) {
+        public CalculationTask(int startIndex, int endIndex, int width, int height, double originX, double originY, double offsetX, double offsetY, int[][] results) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
             this.width = width;
             this.height = height;
             this.originX = originX;
             this.originY = originY;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
             this.results = results;
         }
 
@@ -42,15 +47,15 @@ public class PoolCalculationHandler extends CalculationHandler {
 
             int middleIndex = (startIndex + endIndex) / 2;
 
-            invokeAll(new CalculationTask(startIndex, middleIndex, width, height, originX, originY, results),
-                      new CalculationTask(middleIndex, endIndex, width, height, originX, originY, results));
+            invokeAll(new CalculationTask(startIndex, middleIndex, width, height, originX, originY, offsetX, offsetY, results),
+                      new CalculationTask(middleIndex, endIndex, width, height, originX, originY, offsetX, offsetY, results));
         }
 
         private void computeDirectly() {
             for (int i = startIndex; i < endIndex; i++) {
                 int y = i / height;
                 int x = i % width;
-                Complex z0 = fractal.getZ0(plane, x, y, originX, originY);
+                Complex z0 = fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
                 Function<Complex, Complex> f = fractal.getF();
                 results[y][x] = calculateDivergenceIndex(z0, f);
             }
@@ -77,11 +82,11 @@ public class PoolCalculationHandler extends CalculationHandler {
     }
 
     @Override
-    public int[][] calculateDivergenceIndexes(int width, int height) {
+    public int[][] calculateDivergenceIndexes(int width, int height, double offsetX, double offsetY) {
         int[][] divergenceIndexes = new int[height][width];
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
-        CalculationTask work = new CalculationTask(0, width * height, width, height, originX, originY, divergenceIndexes);
+        CalculationTask work = new CalculationTask(0, width * height, width, height, originX, originY, offsetX, offsetY, divergenceIndexes);
 
         Pool.get(parallelismLevel).invoke(work);
 

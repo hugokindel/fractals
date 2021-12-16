@@ -9,8 +9,8 @@ public class MandelbrotSet extends JuliaSet {
     }
 
     @Override
-    public Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY) {
-        c = super.getZ0(plane, x, y, originX, originY);
+    public Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY) {
+        c = super.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
         return new Complex(0, 0);
     }
 }

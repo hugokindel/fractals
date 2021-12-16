@@ -12,14 +12,14 @@ public class SimpleCalculationHandler extends CalculationHandler {
     }
 
     @Override
-    public int[][] calculateDivergenceIndexes(int width, int height) {
+    public int[][] calculateDivergenceIndexes(int width, int height, double offsetX, double offsetY) {
         int[][] divergenceIndexes = new int[height][width];
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
 
         for (int y = 0 ; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Complex z0 = fractal.getZ0(plane, x, y, originX, originY);
+                Complex z0 = fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
                 Function<Complex, Complex> f = fractal.getF();
                 divergenceIndexes[y][x] = calculateDivergenceIndex(z0, f);
             }
