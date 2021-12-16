@@ -8,6 +8,7 @@ import com.ustudents.fgen.fractals.*;
 import com.ustudents.fgen.generators.*;
 import com.ustudents.fgen.handlers.calculation.CalculationHandler;
 import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
+import com.ustudents.fgen.handlers.calculation.SimpleCalculationHandler;
 import com.ustudents.fgen.handlers.calculation.StreamCalculationHandler;
 import com.ustudents.fgen.handlers.image.ImageHandler;
 import com.ustudents.fgen.handlers.image.SimpleImageHandler;
@@ -43,7 +44,7 @@ public class FGen extends Program {
             ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.0006);
             //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
             //ImageHandler imageHandler = new SimpleImageHandler();
-            CalculationHandler calculationHandler = new StreamCalculationHandler(fractal, plane, 100, 2);
+            CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 100, 2);
             ImageHandler imageHandler = new SimpleImageHandler();
             JpegGenerator jpegGenerator = new JpegGenerator(calculationHandler, imageHandler, "fgen-" + 0 + ".jpeg");
             jpegGenerator.generate(4096, 4096, 1024, 0);

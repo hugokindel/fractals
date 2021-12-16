@@ -1,13 +1,7 @@
 package com.ustudents.fgen.handlers.calculation;
 
 import com.ustudents.fgen.fractals.Fractal;
-import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 
 import static java.util.stream.IntStream.range;
 
