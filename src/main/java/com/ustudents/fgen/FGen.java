@@ -40,7 +40,7 @@ public class FGen extends Program {
 
             ListImageGenerator generator = new ListImageGenerator();
             for (int i = 0; i < 10; i++) {
-                Fractal fractal = new JuliaSet(new Complex(0.3, 0.5));
+                Fractal fractal = new MandelbrotSet();
                 ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001 + i * 0.001);
                 //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
                 //ImageHandler imageHandler = new SimpleImageHandler();

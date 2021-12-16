@@ -4,8 +4,8 @@ import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
 
 public class MandelbrotSet extends JuliaSet {
-    public MandelbrotSet(Complex c) {
-        super(c);
+    public MandelbrotSet() {
+        super(new Complex(0, 0));
     }
 
     @Override
