@@ -48,25 +48,25 @@ public class StringUtil {
     }
 
     /**
-     * Calculate the levenshtein distance.
+     * compute the levenshtein distance.
      * Implementation from: http://rosettacode.org/wiki/Levenshtein_distance#Java
      *
      * @param str1 The first string to compare.
      * @param str2 The second string to compare.
      * @return the distance between str1 and str2.
      */
-    public static int calculateLevenshteinDistance(String str1, String str2) {
+    public static int computeLevenshteinDistance(String str1, String str2) {
         if (str1.length() == 0 || str2.length() == 0) {
             return str1.length();
         }
 
         if (str1.charAt(0) == str2.charAt(0)) {
-            return calculateLevenshteinDistance(str1.substring(1), str2.substring(1));
+            return computeLevenshteinDistance(str1.substring(1), str2.substring(1));
         }
 
-        int a = calculateLevenshteinDistance(str1.substring(1), str2.substring(1));
-        int b = calculateLevenshteinDistance(str1, str2.substring(1));
-        int c = calculateLevenshteinDistance(str1.substring(1), str2);
+        int a = computeLevenshteinDistance(str1.substring(1), str2.substring(1));
+        int b = computeLevenshteinDistance(str1, str2.substring(1));
+        int c = computeLevenshteinDistance(str1.substring(1), str2);
 
         if (a > b) {
             a = b;

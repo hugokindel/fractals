@@ -16,7 +16,7 @@ public class ComplexPlane {
         this.end = end;
         this.zoom = zoom;
 
-        calculateViewSize();
+        computeViewSize();
     }
 
     public Complex getStart() {
@@ -50,22 +50,22 @@ public class ComplexPlane {
     public void setStart(Complex start) {
         this.start = start;
 
-        calculateViewSize();
+        computeViewSize();
     }
 
     public void setEnd(Complex end) {
         this.end = end;
 
-        calculateViewSize();
+        computeViewSize();
     }
 
     public void setZoom(double zoom) {
         this.zoom = zoom;
 
-        calculateViewSize();
+        computeViewSize();
     }
 
-    private void calculateViewSize() {
+    private void computeViewSize() {
         this.viewWidth = (int)(Math.abs(end.real - start.real) / zoom);
         this.viewHeight = (int)(Math.abs(end.imaginary - start.imaginary) / zoom);
     }

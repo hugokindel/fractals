@@ -13,7 +13,7 @@ public class SingleMemoryGenerator extends SingleGenerator {
 
     public void generate(int width, int height, double offsetX, double offsetY) {
         Benchmark benchmark = new Benchmark();
-        divergenceIndexes = calculationHandler.calculateDivergenceIndexes(width, height, offsetX, offsetY);
+        divergenceIndexes = calculationHandler.computeDivergenceIndexes(width, height, offsetX, offsetY);
         FGen.calculationHandlerDuration = FGen.calculationHandlerDuration.plus(benchmark.end());
     }
 }

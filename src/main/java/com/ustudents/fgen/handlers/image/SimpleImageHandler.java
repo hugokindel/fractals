@@ -10,9 +10,7 @@ public class SimpleImageHandler extends ImageHandler {
 
         for (int y = 0 ; y < divergenceIndexes.length; y++) {
             for (int x = 0; x < divergenceIndexes[0].length; x++) {
-                int index = divergenceIndexes[y][x];
-                int color = Color.HSBtoRGB((float)index / maxIterations, 0.7f, 0.7f);
-                bufferedImage.setRGB(x, y, color);
+                computeColor(bufferedImage, x, y, divergenceIndexes[y][x], maxIterations);
             }
         }
 

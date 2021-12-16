@@ -38,17 +38,14 @@ public class FGen extends Program {
             generator.generate(4096, 4096);
             System.out.println(benchmark.end());*/
 
-            ListImageGenerator generator = new ListImageGenerator();
-            for (int i = 0; i < 10; i++) {
-                Fractal fractal = new MandelbrotSet();
-                ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.001 + i * 0.001);
-                //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
-                //ImageHandler imageHandler = new SimpleImageHandler();
-                CalculationHandler calculationHandler = new PoolCalculationHandler(fractal, plane, 1000, 2);
-                ImageHandler imageHandler = new SimpleImageHandler();
-                JpegGenerator jpegGenerator = new JpegGenerator(calculationHandler, imageHandler, "fgen-" + i + ".jpeg");
-                jpegGenerator.generate(4096, 4096, 1024, 1024);
-            }
+            Fractal fractal = new MandelbrotSet();
+            ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.0006);
+            //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
+            //ImageHandler imageHandler = new SimpleImageHandler();
+            CalculationHandler calculationHandler = new PoolCalculationHandler(fractal, plane, 100, 2);
+            ImageHandler imageHandler = new SimpleImageHandler();
+            JpegGenerator jpegGenerator = new JpegGenerator(calculationHandler, imageHandler, "fgen-" + 0 + ".jpeg");
+            jpegGenerator.generate(4096, 4096, 1024, 0);
 
             Out.println(String.format("CalculationHandler %s", calculationHandlerDuration));
             Out.println(String.format("ImageHandler %s", imageHandlerDuration));

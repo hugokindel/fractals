@@ -136,7 +136,7 @@ public abstract class Runnable {
             Option option = field.getAnnotation(Option.class);
 
             for (String name : option.names()) {
-                int optionDistance = StringUtil.calculateLevenshteinDistance(unknownOption, name);
+                int optionDistance = StringUtil.computeLevenshteinDistance(unknownOption, name);
 
                 if (distance == -1 || optionDistance < distance) {
                     distance = optionDistance;

@@ -43,8 +43,7 @@ public class PoolImageHandler extends ImageHandler {
             for (int i = startIndex; i < endIndex; i++) {
                 int y = i / divergenceIndexes.length;
                 int x = i % divergenceIndexes[0].length;
-                int color = Color.HSBtoRGB((float)divergenceIndexes[y][x] / maxIterations, 0.7f, 0.7f);
-                bufferedImage.setRGB(x, y, color);
+                computeColor(bufferedImage, x, y, divergenceIndexes[y][x], maxIterations);
             }
         }
     }

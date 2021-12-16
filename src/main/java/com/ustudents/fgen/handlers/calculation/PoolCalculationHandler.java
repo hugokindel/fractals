@@ -57,7 +57,7 @@ public class PoolCalculationHandler extends CalculationHandler {
                 int x = i % width;
                 Complex z0 = fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
                 Function<Complex, Complex> f = fractal.getF();
-                results[y][x] = calculateDivergenceIndex(z0, f);
+                results[y][x] = computeDivergenceIndex(z0, f);
             }
         }
     }
@@ -82,7 +82,7 @@ public class PoolCalculationHandler extends CalculationHandler {
     }
 
     @Override
-    public int[][] calculateDivergenceIndexes(int width, int height, double offsetX, double offsetY) {
+    public int[][] computeDivergenceIndexes(int width, int height, double offsetX, double offsetY) {
         int[][] divergenceIndexes = new int[height][width];
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
