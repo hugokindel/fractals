@@ -29,12 +29,12 @@ public class StreamCalculationHandler extends CalculationHandler{
             }
         }
 
-        return (int[][]) range(0, complexesIndexes.length)
+        return range(0, complexesIndexes.length)
                 .parallel()
                 .mapToObj(x -> Arrays.stream(complexesIndexes[x])
                         .parallel()
                         .mapToInt(z0 -> computeDivergenceIndex(z0, fractal.getF()))
                         .toArray())
-                .toArray();
+                .toArray(int[][]::new);
     }
 }
