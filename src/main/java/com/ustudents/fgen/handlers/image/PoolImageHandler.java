@@ -51,19 +51,19 @@ public class PoolImageHandler extends ImageHandler {
     public int parallelismLevel;
     public int parallelismThreshold;
 
-    public PoolImageHandler(ColorHandler colorGenerator) {
-        super(colorGenerator);
+    public PoolImageHandler(ColorHandler colorHandler) {
+        super(colorHandler);
         this.parallelismLevel = Runtime.getRuntime().availableProcessors();
         this.parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
     }
 
-    public PoolImageHandler(ColorHandler colorGenerator, int parallelismLevel) {
-        this(colorGenerator);
+    public PoolImageHandler(ColorHandler colorHandler, int parallelismLevel) {
+        this(colorHandler);
         this.parallelismLevel = parallelismLevel;
     }
 
-    public PoolImageHandler(ColorHandler colorGenerator, int parallelismLevel, int parallelismThreshold) {
-        this(colorGenerator, parallelismLevel);
+    public PoolImageHandler(ColorHandler colorHandler, int parallelismLevel, int parallelismThreshold) {
+        this(colorHandler, parallelismLevel);
         this.parallelismThreshold = parallelismThreshold;
     }
 

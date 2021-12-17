@@ -5,8 +5,8 @@ import com.ustudents.fgen.handlers.color.ColorHandler;
 import java.awt.image.BufferedImage;
 
 public class SimpleImageHandler extends ImageHandler {
-    public SimpleImageHandler(ColorHandler colorGenerator) {
-        super(colorGenerator);
+    public SimpleImageHandler(ColorHandler colorHandler) {
+        super(colorHandler);
     }
 
     @Override
