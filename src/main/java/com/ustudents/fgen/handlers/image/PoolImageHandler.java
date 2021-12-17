@@ -1,8 +1,8 @@
 package com.ustudents.fgen.handlers.image;
 
 import com.ustudents.fgen.common.utils.Pool;
+import com.ustudents.fgen.handlers.color.ColorHandler;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.RecursiveAction;
 
@@ -43,7 +43,7 @@ public class PoolImageHandler extends ImageHandler {
             for (int i = startIndex; i < endIndex; i++) {
                 int y = i / divergenceIndexes.length;
                 int x = i % divergenceIndexes[0].length;
-                computeColor(bufferedImage, x, y, divergenceIndexes[y][x], maxIterations);
+                computeColorOfIndex(bufferedImage, x, y, divergenceIndexes[y][x], maxIterations);
             }
         }
     }
@@ -51,18 +51,19 @@ public class PoolImageHandler extends ImageHandler {
     public int parallelismLevel;
     public int parallelismThreshold;
 
-    public PoolImageHandler() {
+    public PoolImageHandler(ColorHandler colorGenerator) {
+        super(colorGenerator);
         this.parallelismLevel = Runtime.getRuntime().availableProcessors();
         this.parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
     }
 
-    public PoolImageHandler(int parallelismLevel) {
-        this();
+    public PoolImageHandler(ColorHandler colorGenerator, int parallelismLevel) {
+        this(colorGenerator);
         this.parallelismLevel = parallelismLevel;
     }
 
-    public PoolImageHandler(int parallelismLevel, int parallelismThreshold) {
-        this(parallelismLevel);
+    public PoolImageHandler(ColorHandler colorGenerator, int parallelismLevel, int parallelismThreshold) {
+        this(colorGenerator, parallelismLevel);
         this.parallelismThreshold = parallelismThreshold;
     }
 

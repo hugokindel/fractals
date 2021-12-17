@@ -1,6 +1,7 @@
 package com.ustudents.fgen.generators;
 
 import com.ustudents.fgen.handlers.calculation.CalculationHandler;
+import com.ustudents.fgen.handlers.color.FullColorHandler;
 import com.ustudents.fgen.handlers.image.ImageHandler;
 import com.ustudents.fgen.handlers.image.SimpleImageHandler;
 
@@ -15,7 +16,7 @@ public class ListImageGenerator extends ListGenerator {
     @Override
     public void addCalculationHandler(CalculationHandler calculationHandler) {
         calculationHandlers.add(calculationHandler);
-        imageHandlers.add(new SimpleImageHandler());
+        imageHandlers.add(new SimpleImageHandler(new FullColorHandler()));
     }
 
     public void addCalculationHandler(CalculationHandler calculationHandler, ImageHandler imageHandler) {
