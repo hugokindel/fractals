@@ -4,9 +4,7 @@ import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.utils.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class defines a runnable command, which means it can read arguments back from the CLI and set any @Option
@@ -28,7 +26,26 @@ public abstract class Runnable {
      * @param <T> The type of the child class.
      */
     protected <T extends Runnable> boolean parse(String[] args, Class<T> classWithArgs) {
-        Set<Field> fields = new HashSet<>(Arrays.asList(Runnable.class.getDeclaredFields()));
+        if (args.length == 0) {
+            showHelp = true;
+        }
+
+        List<String> formattedArgs = new ArrayList<>();
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+
+            if (arg.startsWith("-")) {
+                formattedArgs.add(arg);
+                while (i + 1 < args.length && !args[i + 1].startsWith("-")) {
+                    i++;
+                    boolean hasEqual = formattedArgs.get(formattedArgs.size() - 1).contains("=");
+                    String updated = formattedArgs.get(formattedArgs.size() - 1) + (hasEqual ? " " : "=") + args[i];
+                    formattedArgs.set(formattedArgs.size() - 1, updated);
+                }
+            }
+        }
+
+        Set<Field> fields = new LinkedHashSet<>(Arrays.asList(Runnable.class.getDeclaredFields()));
         Class<?> currentType = classWithArgs;
         while (currentType != null) {
             fields.addAll(Arrays.asList(currentType.getDeclaredFields()));
@@ -36,7 +53,7 @@ public abstract class Runnable {
         }
         fields.removeIf(field -> !field.isAnnotationPresent(Option.class));
 
-        for (String arg : args) {
+        for (String arg : formattedArgs) {
             if (arg.startsWith("-")) {
                 String[] parts = arg.split("=");
                 boolean found = false;
@@ -52,7 +69,6 @@ public abstract class Runnable {
                                     field.set(this, true);
                                 } else if (parts.length == 1) {
                                     Out.printlnError("Option '" + name + "' called with no values when one was expected (please use the -h command).");
-                                    return false;
                                 } else {
                                     field.set(this, parse(parts[1], field.getType()));
                                 }
@@ -99,11 +115,14 @@ public abstract class Runnable {
         if (classType == String[].class) {
             return value.split(",");
         } else if (classType == String.class) {
+            if (value.startsWith("\"") && value.endsWith("\"")) {
+                return value.substring(1, value.length() - 1);
+            }
             return value;
         } else if (classType == char.class) {
             return value.charAt(0);
         } else if (classType == boolean.class) {
-            return !value.equals("0");
+            return true;
         } else if (classType == int.class) {
             return Integer.parseInt(value);
         } else if (classType == byte.class) {
@@ -169,7 +188,11 @@ public abstract class Runnable {
      * @param fields The list of fields to show.
      * @param <T> The type of the child's class.
      */
-    private <T extends Runnable> void displayHelp(Class<T> classWithArgs, Set<Field> fields) {
+    private <T extends Runnable> void displayHelp(Class<T> classWithArgs, Set<Field> fieldsSet) {
+        List<Field> fields = new ArrayList<>(fieldsSet.stream().toList());
+        fields.add(fields.remove(1));
+        fields.add(fields.remove(0));
+
         Out.println("usage: ./" + classWithArgs.getAnnotation(Command.class).name() + ".jar [options...]");
 
         Out.println();

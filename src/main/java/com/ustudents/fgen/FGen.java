@@ -20,8 +20,11 @@ import java.time.Duration;
 
 @Command(name = "fgen", version = "1.0.0", description = "A tool to generate various fractals.")
 public class FGen extends Program {
-    @Option(names = {"--view"}, description = "Defines which type of view to use.", usage = "<gui> or <cli>")
+    @Option(names = {"--view"}, description = "Defines which type of view to use.", usage = "\"gui\" or \"cli\"")
     protected static String viewString = "cli";
+
+    @Option(names = {"--load"}, description = "Loads a configuration at the specified filepath.", usage = "<FILEPATH>")
+    protected static String loadConfigurationPath = null;
 
     public static Duration calculationHandlerDuration = Duration.ZERO;
     public static Duration imageHandlerDuration = Duration.ZERO;
@@ -29,6 +32,10 @@ public class FGen extends Program {
 
     @Override
     protected int main(String[] args) {
+        if (args.length == 0) {
+
+        }
+
         if (viewString.equals("gui")) {
             FGenGui.launchFgen(args);
         } else {
@@ -41,7 +48,7 @@ public class FGen extends Program {
             generator.generate(4096, 4096);
             System.out.println(benchmark.end());*/
 
-            Fractal fractal = new MandelbrotSet();
+            /*Fractal fractal = new MandelbrotSet();
             ComplexPlane plane = new ComplexPlane(new Complex(-1,1), new Complex(1,-1), 0.0006);
             //CalculationHandler calculationHandler = new SimpleCalculationHandler(fractal, plane, 1000, 2);
             //ImageHandler imageHandler = new SimpleImageHandler();
@@ -52,7 +59,7 @@ public class FGen extends Program {
 
             Out.println(String.format("CalculationHandler %s", calculationHandlerDuration));
             Out.println(String.format("ImageHandler %s", imageHandlerDuration));
-            Out.println(String.format("GifCreation %s", gifCreation));
+            Out.println(String.format("GifCreation %s", gifCreation));*/
         }
 
         return 0;
