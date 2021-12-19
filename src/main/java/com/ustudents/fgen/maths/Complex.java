@@ -1,8 +1,18 @@
 package com.ustudents.fgen.maths;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
+
+@JsonSerializable
 public class Complex implements Cloneable {
-    public double real;
-    public double imaginary;
+    @JsonSerializable
+    public Double real = 0.;
+
+    @JsonSerializable
+    public Double imaginary = 0.;
+
+    public Complex() {
+
+    }
 
     public Complex(double real, double imaginary) {
         this.real = real;

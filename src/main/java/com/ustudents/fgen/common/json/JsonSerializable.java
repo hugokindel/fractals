@@ -16,4 +16,6 @@ public @interface JsonSerializable {
     boolean necessary() default true;
 
     JsonSerializableType type() default JsonSerializableType.Both;
+
+    boolean serializeClassName() default false;
 }

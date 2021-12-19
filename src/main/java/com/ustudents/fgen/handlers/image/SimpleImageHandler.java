@@ -1,10 +1,16 @@
 package com.ustudents.fgen.handlers.image;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
 import java.awt.image.BufferedImage;
 
+@JsonSerializable(serializeClassName = true)
 public class SimpleImageHandler extends ImageHandler {
+    public SimpleImageHandler() {
+
+    }
+
     public SimpleImageHandler(ColorHandler colorHandler) {
         super(colorHandler);
     }

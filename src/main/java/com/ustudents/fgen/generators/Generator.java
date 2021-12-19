@@ -1,5 +1,31 @@
 package com.ustudents.fgen.generators;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
+
+@JsonSerializable(serializeClassName = true)
 public abstract class Generator {
-    public abstract void generate(int width, int height, double offsetX, double offsetY);
+    @JsonSerializable
+    public Integer width = 0;
+
+    @JsonSerializable
+    public Integer height = 0;
+
+    @JsonSerializable
+    public Double offsetX = 0.;
+
+    @JsonSerializable
+    public Double offsetY = 0.;
+
+    public Generator() {
+
+    }
+
+    public Generator(int width, int height, double offsetX, double offsetY) {
+        this.width = width;
+        this.height = height;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+    }
+
+    public abstract void generate();
 }

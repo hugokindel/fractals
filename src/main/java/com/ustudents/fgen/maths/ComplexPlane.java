@@ -1,21 +1,37 @@
 package com.ustudents.fgen.maths;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
+import com.ustudents.fgen.common.json.JsonSerializableConstructor;
+
+@JsonSerializable
 public class ComplexPlane {
-    private Complex start;
+    @JsonSerializable
+    private Complex start = null;
 
-    private Complex end;
+    @JsonSerializable
+    private Complex end = null;
 
-    private double zoom;
+    @JsonSerializable
+    private Double step = 0.;
 
     private int viewWidth;
 
     private int viewHeight;
 
-    public ComplexPlane(Complex start, Complex end, double zoom) {
+    public ComplexPlane() {
+
+    }
+
+    public ComplexPlane(Complex start, Complex end, double step) {
         this.start = start;
         this.end = end;
-        this.zoom = zoom;
+        this.step = step;
 
+        computeViewSize();
+    }
+
+    @JsonSerializableConstructor
+    public void deserialize() {
         computeViewSize();
     }
 
@@ -27,8 +43,8 @@ public class ComplexPlane {
         return end;
     }
 
-    public double getZoom() {
-        return zoom;
+    public double getStep() {
+        return step;
     }
 
     public int getViewWidth() {
@@ -59,14 +75,14 @@ public class ComplexPlane {
         computeViewSize();
     }
 
-    public void setZoom(double zoom) {
-        this.zoom = zoom;
+    public void setStep(double step) {
+        this.step = step;
 
         computeViewSize();
     }
 
     private void computeViewSize() {
-        this.viewWidth = (int)(Math.abs(end.real - start.real) / zoom);
-        this.viewHeight = (int)(Math.abs(end.imaginary - start.imaginary) / zoom);
+        this.viewWidth = (int)(Math.abs(end.real - start.real) / step);
+        this.viewHeight = (int)(Math.abs(end.imaginary - start.imaginary) / step);
     }
 }

@@ -1,12 +1,11 @@
 package com.ustudents.fgen.common.json;
 
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.utils.StringUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * This class is used to write Json data format.
@@ -291,7 +290,13 @@ public class JsonWriter {
         } else if (value == null) {
             writeNull();
         } else if (value.getClass().isAnnotationPresent(JsonSerializable.class)) {
-            writeMap(Objects.requireNonNull(Json.serialize(value)));
+            Map<String, Object> map = new LinkedHashMap<>();
+            JsonSerializable serializable = value.getClass().getAnnotation(JsonSerializable.class);
+            if (serializable.serializeClassName()) {
+                map.put("class", value.getClass().getSimpleName());
+            }
+            map.putAll(Objects.requireNonNull(Json.serialize(value)));
+            writeMap(map);
         }
     }
 

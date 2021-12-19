@@ -1,11 +1,13 @@
 package com.ustudents.fgen.handlers.image;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.utils.Pool;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
 import java.awt.image.BufferedImage;
 import java.util.concurrent.RecursiveAction;
 
+@JsonSerializable(serializeClassName = true)
 public class PoolImageHandler extends ImageHandler {
     public static final int DEFAULT_PARALLELISM_THRESHOLD = 4194304;
 

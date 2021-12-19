@@ -1,5 +1,6 @@
 package com.ustudents.fgen.handlers.calculation;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.utils.Pool;
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.maths.Complex;
@@ -9,6 +10,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.function.Function;
 
+@JsonSerializable(serializeClassName = true)
 public class PoolCalculationHandler extends CalculationHandler {
     public static final int DEFAULT_PARALLELISM_THRESHOLD = 16192;
 
@@ -62,8 +64,15 @@ public class PoolCalculationHandler extends CalculationHandler {
         }
     }
 
+    @JsonSerializable
     public int parallelismLevel;
+
+    @JsonSerializable
     public int parallelismThreshold;
+
+    public PoolCalculationHandler() {
+
+    }
 
     public PoolCalculationHandler(Fractal fractal, ComplexPlane plane, int maxIterations, int radius) {
         super(fractal, plane, maxIterations, radius);

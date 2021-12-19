@@ -1,12 +1,18 @@
 package com.ustudents.fgen.handlers.calculation;
 
+import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
 
 import java.util.function.Function;
 
+@JsonSerializable(serializeClassName = true)
 public class SimpleCalculationHandler extends CalculationHandler {
+    public SimpleCalculationHandler() {
+
+    }
+
     public SimpleCalculationHandler(Fractal fractal, ComplexPlane complexPlane, int maxIterations, int radius) {
         super(fractal, complexPlane, maxIterations, radius);
     }

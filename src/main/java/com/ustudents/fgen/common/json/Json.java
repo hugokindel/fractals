@@ -1,5 +1,6 @@
 package com.ustudents.fgen.common.json;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.Class;
 import java.lang.reflect.Method;
@@ -63,12 +64,8 @@ public class Json {
                 String key = serializable.path().isEmpty() ? field.getName() : serializable.path();
                 String[] path = key.split("\\.");
 
-                if (field.getType().isAnnotationPresent(JsonSerializable.class)) {
-                    if (field.get(object) == null) {
-                        insertInMapAtSearchPath(json, path, null);
-                    } else {
-                        insertInMapAtSearchPath(json, path, serialize(field.get(object)));
-                    }
+                if (field.getType().isAnnotationPresent(JsonSerializable.class) && field.get(object) == null) {
+                    insertInMapAtSearchPath(json, path, null);
                 } else {
                     insertInMapAtSearchPath(json, path, field.get(object));
                 }
@@ -117,6 +114,31 @@ public class Json {
         try {
             isSerializable(classType);
             return deserialize(JsonReader.readMap(filePath), classType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Deserialize a Json file to an object.
+     *
+     * @param filePath The file path to deserialize.
+     * @param classType The Class to create.
+     * @param <T> The type to return.
+     *
+     * @return the class of type T created.
+     */
+    public static <T> T deserializeFromResources(String filePath, Class<T> classType) {
+        try {
+            isSerializable(classType);
+
+            InputStream stream = classType
+                    .getClassLoader()
+                    .getResourceAsStream(filePath);
+
+            return deserialize(JsonReader.readMap(stream), classType);
         } catch (Exception e) {
             e.printStackTrace();
         }

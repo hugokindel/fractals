@@ -1,14 +1,39 @@
 package com.ustudents.fgen.handlers.image;
 
+import com.ustudents.fgen.common.json.Json;
+import com.ustudents.fgen.common.json.JsonSerializable;
+import com.ustudents.fgen.common.json.JsonSerializableConstructor;
+import com.ustudents.fgen.common.json.JsonSerializableType;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
+@JsonSerializable(serializeClassName = true)
+@SuppressWarnings("unchecked")
 public abstract class ImageHandler {
-    public ColorHandler colorHandler;
+    @JsonSerializable(type = JsonSerializableType.SerializableOnly)
+    public ColorHandler colorHandler = null;
+
+    public ImageHandler() {
+
+    }
 
     public ImageHandler(ColorHandler colorHandler) {
         this.colorHandler = colorHandler;
+    }
+
+    @JsonSerializableConstructor
+    public void deserialize(Map<String, Object> elements) {
+        Map<String, Object> colorHandlerMap = (Map<String, Object>)elements.get("colorHandler");
+        try {
+            Class<ColorHandler> colorHandlerClass =
+                    (Class<ColorHandler>)Class.forName("com.ustudents.fgen.handlers.color." + colorHandlerMap.get("class"));
+            colorHandlerMap.remove("class");
+            colorHandler = Json.deserialize(colorHandlerMap, colorHandlerClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public abstract BufferedImage fillImage(int[][] divergenceIndexes, int maxIterations);

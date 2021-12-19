@@ -1,18 +1,42 @@
 package com.ustudents.fgen;
 
+import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
-import com.ustudents.fgen.common.logs.Out;
+import com.ustudents.fgen.common.json.JsonSerializableType;
 import com.ustudents.fgen.generators.Generator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @JsonSerializable
+@SuppressWarnings("unchecked")
 public class Configuration {
-    Generator[] generators;
+    @JsonSerializable
+    public Integer version = 1;
+
+    @JsonSerializable(type = JsonSerializableType.SerializableOnly)
+    List<Generator> generators = new ArrayList<>();
 
     @JsonSerializableConstructor
-    public void constructor(Map<String, Object> elements) {
-        Out.print(elements);
+    public void deserialize(Map<String, Object> elements) {
+        for (Map<String, Object> generatorMap : (List<Map<String, Object>>)elements.get("generators")) {
+            try {
+                Class<Generator> generatorClass =
+                        (Class<Generator>)Class.forName("com.ustudents.fgen.generators." + generatorMap.get("class"));
+                generatorMap.remove("class");
+                generators.add(Json.deserialize(generatorMap, generatorClass));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "generators=" + generators +
+                '}';
     }
 }
