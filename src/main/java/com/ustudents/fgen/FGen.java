@@ -23,7 +23,7 @@ public class FGen extends Program {
     @Option(names = {"-s", "--save"}, description = "Defines a filepath to save the executed configuration.", usage = "<filepath>")
     protected static String saveFilepath = null;
 
-    @Option(names = {"-L", "--load-only"}, description = "Defines that the loaded configuration should not be run.\nOnly useful if you want to just save a configuration.")
+    @Option(names = {"-l", "--load-only"}, description = "Defines that the loaded configuration should not be run.\nOnly useful if you want to just save a configuration.")
     protected static boolean shouldOnlyLoad = false;
 
     public static Duration calculationHandlerDuration = Duration.ZERO;
