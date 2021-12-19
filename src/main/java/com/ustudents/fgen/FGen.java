@@ -21,7 +21,7 @@ public class FGen extends Program {
     @Option(names = {"-f", "--load-file"}, description = "Loads and run a configuration file stored at <filepath>.", usage = "<filepath>")
     protected static String loadFilepath = null;
 
-    @Option(names = {"-p", "--load-preset"}, description = "Loads and run a configuration preset file.", usage = "\"default\"")
+    @Option(names = {"-p", "--load-preset"}, description = "Loads and run a configuration preset file.", usage = "\"default\" or \"mandelbrot\"")
     protected static String presetName = null;
 
     @Option(names = {"-s", "--save"}, description = "Defines a filepath to save the loaded configuration.", usage = "<filepath>")
