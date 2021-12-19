@@ -8,20 +8,18 @@ import java.util.function.Function;
 
 @JsonSerializable(serializeClassName = true)
 public class MandelbrotSet extends Fractal {
-    private Complex c = new Complex();
-
     public MandelbrotSet() {
 
     }
 
     @Override
     public Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY) {
-        c = new Complex(originX + plane.getStep() * (x - offsetX), originY - plane.getStep() * (y - offsetY));
         return new Complex(0, 0);
     }
 
     @Override
-    public Function<Complex, Complex> getF() {
+    public Function<Complex, Complex> getF(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY) {
+        Complex c = new Complex(originX + plane.getStep() * (x - offsetX), originY - plane.getStep() * (y - offsetY));
         return (Complex z) -> z.multiply(z).add(c);
     }
 }

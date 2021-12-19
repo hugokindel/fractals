@@ -10,5 +10,5 @@ import java.util.function.Function;
 public abstract class Fractal {
     public abstract Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY);
 
-    public abstract Function<Complex, Complex> getF();
+    public abstract Function<Complex, Complex> getF(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY);
 }

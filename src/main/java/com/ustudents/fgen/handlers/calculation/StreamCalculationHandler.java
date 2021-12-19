@@ -1,8 +1,13 @@
 package com.ustudents.fgen.handlers.calculation;
 
+import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.fractals.Fractal;
+import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
+
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 import static java.util.stream.IntStream.range;
 
@@ -25,7 +30,11 @@ public class StreamCalculationHandler extends CalculationHandler {
                 .parallel()
                 .mapToObj(y -> range(0, width)
                         .parallel()
-                        .map(x -> computeDivergenceIndex(fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY), fractal.getF()))
+                        .map(x -> {
+                            Complex z0 = fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
+                            Function<Complex, Complex> f =  fractal.getF(plane, x, y, originX, originY, offsetX, offsetY);
+                            return computeDivergenceIndex(z0, f);
+                        })
                         .toArray())
                 .toArray(int[][]::new);
     }
