@@ -11,11 +11,11 @@ import java.util.*;
  * attributes. Some syntax is inspired from: https://picocli.info */
 public abstract class Runnable {
     /** Option to show the help message. */
-    @Option(names = {"-h", "--help"}, description = "Show this help message.")
+    @Option(names = {"-h", "--help"}, description = "Shows this help message.")
     protected boolean showHelp = false;
 
     /** Option to show the version message. */
-    @Option(names = {"-v", "--version"}, description = "Show the version number.")
+    @Option(names = {"-v", "--version"}, description = "Shows the version number.")
     protected boolean showVersion = false;
 
     /**
@@ -185,7 +185,7 @@ public abstract class Runnable {
      * Shows the program's help message.
      *
      * @param classWithArgs The child's class.
-     * @param fields The list of fields to show.
+     * @param fieldsSet The list of fields to show.
      * @param <T> The type of the child's class.
      */
     private <T extends Runnable> void displayHelp(Class<T> classWithArgs, Set<Field> fieldsSet) {
@@ -198,7 +198,9 @@ public abstract class Runnable {
         Out.println();
 
         for (String line : classWithArgs.getAnnotation(Command.class).description()) {
-            Out.println(line);
+            for (String subline : line.split("\n")) {
+                Out.println(subline);
+            }
         }
 
         Out.println();
