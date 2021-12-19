@@ -64,11 +64,11 @@ public class PoolCalculationHandler extends CalculationHandler {
         }
     }
 
-    @JsonSerializable
-    public int parallelismLevel;
+    @JsonSerializable(necessary = false)
+    public Integer parallelismLevel = Runtime.getRuntime().availableProcessors();
 
-    @JsonSerializable
-    public int parallelismThreshold;
+    @JsonSerializable(necessary = false)
+    public Integer parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
 
     public PoolCalculationHandler() {
 
@@ -76,8 +76,6 @@ public class PoolCalculationHandler extends CalculationHandler {
 
     public PoolCalculationHandler(Fractal fractal, ComplexPlane plane, int maxIterations, int radius) {
         super(fractal, plane, maxIterations, radius);
-        this.parallelismLevel = Runtime.getRuntime().availableProcessors();
-        this.parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
     }
 
     public PoolCalculationHandler(Fractal fractal, ComplexPlane plane, int maxIterations, int radius, int parallelismLevel) {

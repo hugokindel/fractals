@@ -43,15 +43,17 @@ public class FGen extends Program {
         if (loadFilepath != null) {
             loadedConfiguration = Json.deserialize(loadFilepath, Configuration.class);
         } else if (presetName != null) {
-            loadedConfiguration = Json.deserializeFromResources(presetName, Configuration.class);
+            loadedConfiguration = Json.deserializeFromResources("/presets/" + presetName + ".json", Configuration.class);
         }
 
         if (type.equals("gui")) {
             FGenGui.launchFgen(args);
         } else {
             if (loadedConfiguration != null) {
-                for (Generator generator : loadedConfiguration.generators) {
-                    generator.generate();
+                if (!shouldOnlyLoad) {
+                    for (Generator generator : loadedConfiguration.generators) {
+                        generator.generate();
+                    }
                 }
 
                 if (saveFilepath != null) {

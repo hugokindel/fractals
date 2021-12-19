@@ -12,6 +12,8 @@
 			},
 			"calculationHandler": {
 				"class": "PoolCalculationHandler",
+				"parallelismLevel": 16,
+				"parallelismThreshold": 16192,
 				"fractal": {
 					"class": "JuliaSet",
 					"complex": {

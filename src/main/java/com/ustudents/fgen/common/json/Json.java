@@ -1,5 +1,7 @@
 package com.ustudents.fgen.common.json;
 
+import com.ustudents.fgen.FGen;
+
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.Class;
@@ -134,8 +136,7 @@ public class Json {
         try {
             isSerializable(classType);
 
-            InputStream stream = classType
-                    .getClassLoader()
+            InputStream stream = FGen.class
                     .getResourceAsStream(filePath);
 
             return deserialize(JsonReader.readMap(stream), classType);
@@ -321,6 +322,10 @@ public class Json {
     }
 
     private static void setDefaultValue(Field field, Object object) throws Exception {
+        if (field.get(object) != null) {
+            return;
+        }
+
         Type type = field.getType();
 
         if (type.equals(Boolean.class)) {
