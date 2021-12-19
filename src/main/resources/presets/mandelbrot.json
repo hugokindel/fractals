@@ -7,7 +7,7 @@
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "HsbColorHandler"
+					"class": "FullColorHandler"
 				}
 			},
 			"calculationHandler": {
