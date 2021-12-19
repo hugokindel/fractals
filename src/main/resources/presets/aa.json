@@ -1,0 +1,195 @@
+{
+	"version": 1,
+	"generators": [
+		{
+			"class": "PngGenerator",
+			"path": "x1.png",
+			"aliasingType": "X1",
+			"imageHandler": {
+				"class": "SimpleImageHandler",
+				"colorHandler": {
+					"class": "FullColorHandler"
+				}
+			},
+			"calculationHandler": {
+				"class": "PoolCalculationHandler",
+				"fractal": {
+					"class": "JuliaSet",
+					"c": {
+						"real": 0.285,
+						"imaginary": 0.01
+					}
+				},
+				"plane": {
+					"start": {
+						"real": -1.0,
+						"imaginary": 1.0
+					},
+					"end": {
+						"real": 1.0,
+						"imaginary": -1.0
+					},
+					"step": 0.003
+				},
+				"maxIterations": 1000,
+				"radius": 2
+			},
+			"width": 1024,
+			"height": 1024,
+			"offsetX": 0.0,
+			"offsetY": 0.0
+		},
+		{
+			"class": "PngGenerator",
+			"path": "x2.png",
+			"aliasingType": "X2",
+			"imageHandler": {
+				"class": "SimpleImageHandler",
+				"colorHandler": {
+					"class": "FullColorHandler"
+				}
+			},
+			"calculationHandler": {
+				"class": "PoolCalculationHandler",
+				"fractal": {
+					"class": "JuliaSet",
+					"c": {
+						"real": 0.285,
+						"imaginary": 0.01
+					}
+				},
+				"plane": {
+					"start": {
+						"real": -1.0,
+						"imaginary": 1.0
+					},
+					"end": {
+						"real": 1.0,
+						"imaginary": -1.0
+					},
+					"step": 0.003
+				},
+				"maxIterations": 1000,
+				"radius": 2
+			},
+			"width": 1024,
+			"height": 1024,
+			"offsetX": 0.0,
+			"offsetY": 0.0
+		},
+		{
+			"class": "PngGenerator",
+			"path": "x4.png",
+			"aliasingType": "X4",
+			"imageHandler": {
+				"class": "SimpleImageHandler",
+				"colorHandler": {
+					"class": "FullColorHandler"
+				}
+			},
+			"calculationHandler": {
+				"class": "PoolCalculationHandler",
+				"fractal": {
+					"class": "JuliaSet",
+					"c": {
+						"real": 0.285,
+						"imaginary": 0.01
+					}
+				},
+				"plane": {
+					"start": {
+						"real": -1.0,
+						"imaginary": 1.0
+					},
+					"end": {
+						"real": 1.0,
+						"imaginary": -1.0
+					},
+					"step": 0.003
+				},
+				"maxIterations": 1000,
+				"radius": 2
+			},
+			"width": 1024,
+			"height": 1024,
+			"offsetX": 0.0,
+			"offsetY": 0.0
+		},
+		{
+			"class": "PngGenerator",
+			"path": "x8.png",
+			"aliasingType": "X8",
+			"imageHandler": {
+				"class": "SimpleImageHandler",
+				"colorHandler": {
+					"class": "FullColorHandler"
+				}
+			},
+			"calculationHandler": {
+				"class": "PoolCalculationHandler",
+				"fractal": {
+					"class": "JuliaSet",
+					"c": {
+						"real": 0.285,
+						"imaginary": 0.01
+					}
+				},
+				"plane": {
+					"start": {
+						"real": -1.0,
+						"imaginary": 1.0
+					},
+					"end": {
+						"real": 1.0,
+						"imaginary": -1.0
+					},
+					"step": 0.003
+				},
+				"maxIterations": 1000,
+				"radius": 2
+			},
+			"width": 1024,
+			"height": 1024,
+			"offsetX": 0.0,
+			"offsetY": 0.0
+		},
+		{
+			"class": "PngGenerator",
+			"path": "x16.png",
+			"aliasingType": "X16",
+			"imageHandler": {
+				"class": "SimpleImageHandler",
+				"colorHandler": {
+					"class": "FullColorHandler"
+				}
+			},
+			"calculationHandler": {
+				"class": "PoolCalculationHandler",
+				"fractal": {
+					"class": "JuliaSet",
+					"c": {
+						"real": 0.285,
+						"imaginary": 0.01
+					}
+				},
+				"plane": {
+					"start": {
+						"real": -1.0,
+						"imaginary": 1.0
+					},
+					"end": {
+						"real": 1.0,
+						"imaginary": -1.0
+					},
+					"step": 0.003
+				},
+				"maxIterations": 1000,
+				"radius": 2
+			},
+			"width": 1024,
+			"height": 1024,
+			"offsetX": 0.0,
+			"offsetY": 0.0
+		}
+	]
+}
