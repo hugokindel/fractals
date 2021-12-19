@@ -44,6 +44,10 @@ public class FGen extends Program {
             loadedConfiguration = Json.deserialize(loadFilepath, Configuration.class);
         } else if (presetName != null) {
             loadedConfiguration = Json.deserializeFromResources("/presets/" + presetName + ".json", Configuration.class);
+
+            if (loadedConfiguration == null) {
+                Out.printError("Trying to load an unknown preset!");
+            }
         }
 
         if (type.equals("gui")) {

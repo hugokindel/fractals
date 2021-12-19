@@ -13,11 +13,7 @@
 			"calculationHandler": {
 				"class": "PoolCalculationHandler",
 				"fractal": {
-					"class": "JuliaSet",
-					"complex": {
-						"real": -0.7269,
-						"imaginary": 0.1889
-					}
+					"class": "MandelbrotSet"
 				},
 				"plane": {
 					"start": {

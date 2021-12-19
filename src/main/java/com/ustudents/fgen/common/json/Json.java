@@ -1,6 +1,7 @@
 package com.ustudents.fgen.common.json;
 
 import com.ustudents.fgen.FGen;
+import com.ustudents.fgen.common.logs.Out;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -138,6 +139,10 @@ public class Json {
 
             InputStream stream = FGen.class
                     .getResourceAsStream(filePath);
+
+            if (stream == null) {
+                return null;
+            }
 
             return deserialize(JsonReader.readMap(stream), classType);
         } catch (Exception e) {
