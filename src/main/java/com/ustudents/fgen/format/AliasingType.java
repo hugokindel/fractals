@@ -4,7 +4,23 @@ import com.ustudents.fgen.common.json.JsonSerializable;
 
 @JsonSerializable
 public enum AliasingType {
-    x1,
-    x2,
-    x4
+    X1(1),
+    X2(2),
+    X4(4),
+    X8(8),
+    X16(16);
+
+    public final int multiplicator;
+
+    AliasingType() {
+        this.multiplicator = 1;
+    }
+
+    AliasingType(final int multiplicator) {
+        this.multiplicator = multiplicator;
+    }
+
+    public int getMultiplicator() {
+        return this.multiplicator;
+    }
 }

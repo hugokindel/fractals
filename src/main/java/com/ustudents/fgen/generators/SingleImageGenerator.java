@@ -19,7 +19,7 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
     public BufferedImage bufferedImage = null;
 
     @JsonSerializable(type = JsonSerializableType.SerializableOnly)
-    public AliasingType aliasingType = AliasingType.x1;
+    public AliasingType aliasingType = AliasingType.X1;
 
     @JsonSerializable(type = JsonSerializableType.SerializableOnly)
     public ImageHandler imageHandler = null;
@@ -62,19 +62,12 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
         double oldOffsetX = offsetX;
         double oldOffsetY = offsetY;
 
-        if (aliasingType == AliasingType.x2) {
-            calculationHandler.plane.setStep(calculationHandler.plane.getStep() / 2);
-            width *= 2;
-            height *= 2;
-            offsetX *= 2;
-            offsetY *= 2;
-        } else if (aliasingType == AliasingType.x4) {
-            calculationHandler.plane.setStep(calculationHandler.plane.getStep() / 4);
-            width *= 4;
-            height *= 4;
-            offsetX *= 4;
-            offsetY *= 4;
-        }
+        int n = aliasingType.getMultiplicator();
+        calculationHandler.plane.setStep(calculationHandler.plane.getStep() / n);
+        width *= n;
+        height *= n;
+        offsetX *= n;
+        offsetY *= n;
 
         super.generate();
 

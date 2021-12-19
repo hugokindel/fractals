@@ -4,10 +4,14 @@ import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 import com.ustudents.fgen.common.json.JsonSerializableType;
+import com.ustudents.fgen.common.utils.ColorUtil;
 import com.ustudents.fgen.format.AliasingType;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 @JsonSerializable(serializeClassName = true)
@@ -40,30 +44,22 @@ public abstract class ImageHandler {
     public abstract BufferedImage fillImage(int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType);
 
     protected BufferedImage createImage(int[][] divergenceIndexes, AliasingType aliasingType) {
-        if (aliasingType == AliasingType.x1) {
-            return new BufferedImage(divergenceIndexes.length, divergenceIndexes[0].length, BufferedImage.TYPE_INT_RGB);
-        } else if (aliasingType == AliasingType.x2) {
-            return new BufferedImage(divergenceIndexes.length / 2, divergenceIndexes[0].length / 2, BufferedImage.TYPE_INT_RGB);
-        }
-
-        return new BufferedImage(divergenceIndexes.length / 4, divergenceIndexes[0].length / 4, BufferedImage.TYPE_INT_RGB);
+        int n = aliasingType.getMultiplicator();
+        return new BufferedImage(divergenceIndexes.length / n, divergenceIndexes[0].length / n, BufferedImage.TYPE_INT_RGB);
     }
 
     protected void computeColorOfIndex(BufferedImage bufferedImage, int x, int y, int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType) {
-        if (aliasingType == AliasingType.x1) {
-            int color = colorHandler.computeColor(divergenceIndexes[y][x], maxIterations);
-            bufferedImage.setRGB(x, y, color);
-        } else if (aliasingType == AliasingType.x2) {
-            y *= 2;
-            x *= 2;
-            int color1 = colorHandler.computeColor(divergenceIndexes[y][x], maxIterations);
-            int color2 = colorHandler.computeColor(divergenceIndexes[y][x + 1], maxIterations);
-            int color3 = colorHandler.computeColor(divergenceIndexes[y + 1][x], maxIterations);
-            int color4 = colorHandler.computeColor(divergenceIndexes[y + 1][x + 1], maxIterations);
-            bufferedImage.setRGB(x / 2, y / 2, color1 + color2 + color3 + color4 / 4);
-        } else if (aliasingType == AliasingType.x4) {
-            int color = colorHandler.computeColor(divergenceIndexes[y][x], maxIterations);
-            bufferedImage.setRGB(x / 4, y / 4, color);
+        int n = aliasingType.getMultiplicator();
+        y *= n;
+        x *= n;
+        ArrayList<Integer> colors = new ArrayList<>();
+
+        for (int i = y; i < y + n; i++) {
+            for (int j = x; j < x + n; j++) {
+                colors.add(colorHandler.computeColor(divergenceIndexes[i][j], maxIterations));
+            }
         }
+
+        bufferedImage.setRGB(x / n, y / n, ColorUtil.combineColors(colors));
     }
 }
