@@ -4,11 +4,11 @@
 		{
 			"class": "PngGenerator",
 			"path": "icon.png",
-			"aliasingType": "X1",
+			"aliasingType": "X2",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "Psychedelic2ColorHandler"
 				}
 			},
 			"calculationHandler": {
