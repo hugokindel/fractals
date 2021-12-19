@@ -6,4 +6,6 @@ module com.ustudents.fgen {
     requires java.management;
 
     exports com.ustudents.fgen;
+    exports com.ustudents.fgen.gui;
+    exports com.ustudents.fgen.format;
 }

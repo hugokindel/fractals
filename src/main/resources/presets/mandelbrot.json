@@ -3,7 +3,7 @@
 	"generators": [
 		{
 			"class": "JpegGenerator",
-			"path": "fgen-0.jpeg",
+			"path": "mandelbrot.jpeg",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
@@ -26,7 +26,7 @@
 					},
 					"step": 0.001
 				},
-				"maxIterations": 100,
+				"maxIterations": 1000,
 				"radius": 2
 			},
 			"width": 4096,

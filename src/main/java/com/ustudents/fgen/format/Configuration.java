@@ -1,4 +1,4 @@
-package com.ustudents.fgen;
+package com.ustudents.fgen.format;
 
 import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.common.json.JsonSerializable;
@@ -17,7 +17,7 @@ public class Configuration {
     public Integer version = 1;
 
     @JsonSerializable(type = JsonSerializableType.SerializableOnly)
-    List<Generator> generators = new ArrayList<>();
+    public List<Generator> generators = new ArrayList<>();
 
     @JsonSerializableConstructor
     public void deserialize(Map<String, Object> elements) {
@@ -31,12 +31,5 @@ public class Configuration {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Configuration{" +
-                "generators=" + generators +
-                '}';
     }
 }

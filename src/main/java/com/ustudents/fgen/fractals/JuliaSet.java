@@ -9,14 +9,14 @@ import java.util.function.Function;
 @JsonSerializable(serializeClassName = true)
 public class JuliaSet extends Fractal {
     @JsonSerializable(necessary = false)
-    private Complex complex = new Complex();
+    private Complex c = new Complex();
 
     public JuliaSet() {
 
     }
 
     public JuliaSet(Complex complex) {
-        this.complex = complex;
+        this.c = complex;
     }
 
     @Override
@@ -26,6 +26,6 @@ public class JuliaSet extends Fractal {
 
     @Override
     public Function<Complex, Complex> getF() {
-        return (Complex z) -> z.multiply(z).add(complex);
+        return (Complex z) -> z.multiply(z).add(c);
     }
 }
