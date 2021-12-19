@@ -2,6 +2,7 @@ package com.ustudents.fgen;
 
 import com.ustudents.fgen.common.Program;
 import com.ustudents.fgen.common.json.Json;
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.options.Command;
 import com.ustudents.fgen.common.options.Option;
 
@@ -20,10 +21,12 @@ public class FGen extends Program {
     @Option(names = {"-p", "--load-preset"}, description = "Loads and run a configuration preset file.", usage = "\"default\"")
     protected static String presetName = null;
 
-    @Option(names = {"-s", "--save"}, description = "Defines a filepath to save the executed configuration.", usage = "<filepath>")
+    @Option(names = {"-s", "--save"}, description = "Defines a filepath to save the loaded configuration.", usage = "<filepath>")
     protected static String saveFilepath = null;
 
-    @Option(names = {"-l", "--load-only"}, description = "Defines that the loaded configuration should not be run.\nOnly useful if you want to just save a configuration.")
+    @Option(names = {"-l", "--load-only"}, description =
+            "Defines that the loaded configuration should not be run.\n" +
+            "Useful if you want to only load and save a configuration.")
     protected static boolean shouldOnlyLoad = false;
 
     public static Duration calculationHandlerDuration = Duration.ZERO;
@@ -32,11 +35,13 @@ public class FGen extends Program {
 
     @Override
     protected int main(String[] args) {
-        Configuration configuration;
+        Configuration configuration = null;
 
         if (loadFilepath != null) {
             configuration = Json.deserialize(loadFilepath, Configuration.class);
         }
+
+        Out.println(configuration);
 
         if (type.equals("gui")) {
             FGenGui.launchFgen(args);

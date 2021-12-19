@@ -36,6 +36,7 @@ public abstract class Runnable {
 
             if (arg.startsWith("-")) {
                 formattedArgs.add(arg);
+
                 while (i + 1 < args.length && !args[i + 1].startsWith("-")) {
                     i++;
                     boolean hasEqual = formattedArgs.get(formattedArgs.size() - 1).contains("=");
