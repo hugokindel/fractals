@@ -62,7 +62,7 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
         double oldOffsetX = offsetX;
         double oldOffsetY = offsetY;
 
-        int n = aliasingType.getMultiplicator();
+        int n = aliasingType.getMultiplier();
         calculationHandler.plane.setStep(calculationHandler.plane.getStep() / n);
         width *= n;
         height *= n;

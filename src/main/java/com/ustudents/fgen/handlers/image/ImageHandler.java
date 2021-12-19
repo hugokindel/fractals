@@ -8,10 +8,8 @@ import com.ustudents.fgen.common.utils.ColorUtil;
 import com.ustudents.fgen.format.AliasingType;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 @JsonSerializable(serializeClassName = true)
@@ -44,12 +42,12 @@ public abstract class ImageHandler {
     public abstract BufferedImage fillImage(int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType);
 
     protected BufferedImage createImage(int[][] divergenceIndexes, AliasingType aliasingType) {
-        int n = aliasingType.getMultiplicator();
+        int n = aliasingType.getMultiplier();
         return new BufferedImage(divergenceIndexes.length / n, divergenceIndexes[0].length / n, BufferedImage.TYPE_INT_RGB);
     }
 
     protected void computeColorOfIndex(BufferedImage bufferedImage, int x, int y, int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType) {
-        int n = aliasingType.getMultiplicator();
+        int n = aliasingType.getMultiplier();
         y *= n;
         x *= n;
         ArrayList<Integer> colors = new ArrayList<>();

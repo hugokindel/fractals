@@ -20,7 +20,7 @@ public enum AliasingType {
         this.multiplicator = multiplicator;
     }
 
-    public int getMultiplicator() {
+    public int getMultiplier() {
         return this.multiplicator;
     }
 }
