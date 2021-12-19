@@ -1,0 +1,31 @@
+{
+	"generators": [
+		{
+			"class": "JpegGenerator",
+			"calculationHandler": {
+				"class": "SimpleCalculationHandler",
+				"fractal": {
+					"class": "MandelbrotSet"
+				},
+				"plane": {
+					"start": [-1, 1],
+					"end": [1, -1],
+					"step": 0.001
+				},
+				"maxIterations": 100,
+				"radius": 2
+			},
+			"imageHandler": {
+				"class": "SimpleImageHandler",
+				"colorHandler": {
+					"class": "HsbColorHandler"
+				},
+				"path": "fgen-0.jpeg"
+			},
+			"width": 4096,
+			"height": 4096,
+			"offsetX": 0,
+			"offsetY": 0
+		}
+	]
+}

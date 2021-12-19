@@ -223,8 +223,10 @@ public abstract class Runnable {
             Out.println();
 
             for (String line : option.description()) {
-                Out.print(" \t\t");
-                Out.println(line);
+                for (String subline : line.split("\n")) {
+                    Out.print(" \t\t");
+                    Out.println(subline);
+                }
             }
         }
     }
