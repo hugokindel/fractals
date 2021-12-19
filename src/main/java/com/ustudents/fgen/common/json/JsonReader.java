@@ -224,7 +224,7 @@ public class JsonReader {
         } else if (is(currentCharacter, '{')) {
             return parseMap();
         } else if (is(currentCharacter, lowercase, uppercase)) {
-            return parseEnum();
+            return parseKeyword();
         } else if (is(currentCharacter, '\'')) {
             return parseCharacter();
         } else if (is(currentCharacter, '[')) {
@@ -327,7 +327,7 @@ public class JsonReader {
         return elements;
     }
 
-    private Object parseEnum() throws Exception {
+    private Object parseKeyword() throws Exception {
         StringBuilder contentBuilder = new StringBuilder(String.valueOf(currentCharacter));
         while (is(next(), digits, lowercase, uppercase, ':', '$', '.')) {
             contentBuilder.append(currentCharacter);
@@ -349,12 +349,14 @@ public class JsonReader {
             throw new Exception("Invalid enum");
         }
 
-        try {
+        /*try {
             Class type = Class.forName(contentParts[0]);
             return Enum.valueOf(type, contentParts[2]);
         } catch (Exception e) {
             throw new Exception("Invalid enum");
-        }
+        }*/
+
+        return null;
     }
 
     /**

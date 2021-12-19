@@ -328,7 +328,8 @@ public class JsonWriter {
     }
 
     private void writeEnum(Object value) {
-        write(value.getClass().getName() + "::" + ((Enum)value).name(), false);
+        //write(value.getClass().getName() + "::" + ((Enum)value).name(), false);
+        write("\"" + ((Enum)value).name() + "\"", false);
     }
 
     /** Writes a null value. */

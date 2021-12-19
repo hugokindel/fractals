@@ -2,6 +2,7 @@ package com.ustudents.fgen.handlers.image;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.utils.Pool;
+import com.ustudents.fgen.format.AliasingType;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
 import java.awt.image.BufferedImage;
@@ -17,13 +18,15 @@ public class PoolImageHandler extends ImageHandler {
         int[][] divergenceIndexes;
         int maxIterations;
         BufferedImage bufferedImage;
+        AliasingType aliasingType;
 
-        public ImageTask(int startIndex, int endIndex, int[][] divergenceIndexes, int maxIterations, BufferedImage result) {
+        public ImageTask(int startIndex, int endIndex, int[][] divergenceIndexes, int maxIterations, BufferedImage result, AliasingType aliasingType) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
             this.divergenceIndexes = divergenceIndexes;
             this.maxIterations = maxIterations;
             this.bufferedImage = result;
+            this.aliasingType = aliasingType;
         }
 
         @Override
@@ -37,15 +40,15 @@ public class PoolImageHandler extends ImageHandler {
 
             int middleIndex = (startIndex + endIndex) / 2;
 
-            invokeAll(new ImageTask(startIndex, middleIndex, divergenceIndexes, maxIterations, bufferedImage),
-                      new ImageTask(middleIndex, endIndex, divergenceIndexes, maxIterations, bufferedImage));
+            invokeAll(new ImageTask(startIndex, middleIndex, divergenceIndexes, maxIterations, bufferedImage, aliasingType),
+                      new ImageTask(middleIndex, endIndex, divergenceIndexes, maxIterations, bufferedImage, aliasingType));
         }
 
         private void computeDirectly() {
             for (int i = startIndex; i < endIndex; i++) {
                 int y = i / divergenceIndexes.length;
                 int x = i % divergenceIndexes[0].length;
-                computeColorOfIndex(bufferedImage, x, y, divergenceIndexes[y][x], maxIterations);
+                computeColorOfIndex(bufferedImage, x, y, divergenceIndexes, maxIterations, aliasingType);
             }
         }
     }
@@ -70,9 +73,9 @@ public class PoolImageHandler extends ImageHandler {
     }
 
     @Override
-    public BufferedImage fillImage(int[][] divergenceIndexes, int maxIterations) {
-        BufferedImage bufferedImage = new BufferedImage(divergenceIndexes.length, divergenceIndexes[0].length, BufferedImage.TYPE_INT_RGB);
-        ImageTask work = new ImageTask(0, divergenceIndexes.length * divergenceIndexes[0].length, divergenceIndexes, maxIterations, bufferedImage);
+    public BufferedImage fillImage(int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType) {
+        BufferedImage bufferedImage = createImage(divergenceIndexes, aliasingType);
+        ImageTask work = new ImageTask(0, divergenceIndexes.length * divergenceIndexes[0].length, divergenceIndexes, maxIterations, bufferedImage, aliasingType);
 
         Pool.get(parallelismLevel).invoke(work);
 

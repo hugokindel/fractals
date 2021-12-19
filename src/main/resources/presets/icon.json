@@ -4,6 +4,7 @@
 		{
 			"class": "PngGenerator",
 			"path": "icon.png",
+			"aliasingType": "x2",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
@@ -28,13 +29,13 @@
 						"real": 1.0,
 						"imaginary": -1.0
 					},
-					"step": 0.01
+					"step": 0.001
 				},
 				"maxIterations": 1000,
 				"radius": 2
 			},
-			"width": 256,
-			"height": 256,
+			"width": 4096,
+			"height": 4096,
 			"offsetX": 0.0,
 			"offsetY": 0.0
 		}

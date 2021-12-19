@@ -6,7 +6,7 @@ import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 import com.ustudents.fgen.common.json.JsonSerializableType;
-import com.ustudents.fgen.common.logs.Out;
+import com.ustudents.fgen.format.AliasingType;
 import com.ustudents.fgen.handlers.calculation.CalculationHandler;
 import com.ustudents.fgen.handlers.image.ImageHandler;
 
@@ -17,6 +17,9 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class SingleImageGenerator extends SingleMemoryGenerator {
     public BufferedImage bufferedImage = null;
+
+    @JsonSerializable(type = JsonSerializableType.SerializableOnly)
+    public AliasingType aliasingType = AliasingType.x1;
 
     @JsonSerializable(type = JsonSerializableType.SerializableOnly)
     public ImageHandler imageHandler = null;
@@ -36,6 +39,11 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
         super.deserialize(elements);
 
         Map<String, Object> imageHandlerMap = (Map<String, Object>)elements.get("imageHandler");
+
+        if (elements.containsKey("aliasingType")) {
+            aliasingType = AliasingType.valueOf((String)elements.get("aliasingType"));
+        }
+
         try {
             Class<ImageHandler> imageHandlerClass =
                     (Class<ImageHandler>)Class.forName("com.ustudents.fgen.handlers.image." + imageHandlerMap.get("class"));
@@ -48,10 +56,36 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
 
     @Override
     public void generate() {
+        double oldStep = calculationHandler.plane.getStep();
+        int oldWidth = width;
+        int oldHeight = height;
+        double oldOffsetX = offsetX;
+        double oldOffsetY = offsetY;
+
+        if (aliasingType == AliasingType.x2) {
+            calculationHandler.plane.setStep(calculationHandler.plane.getStep() / 2);
+            width *= 2;
+            height *= 2;
+            offsetX *= 2;
+            offsetY *= 2;
+        } else if (aliasingType == AliasingType.x4) {
+            calculationHandler.plane.setStep(calculationHandler.plane.getStep() / 4);
+            width *= 4;
+            height *= 4;
+            offsetX *= 4;
+            offsetY *= 4;
+        }
+
         super.generate();
 
+        calculationHandler.plane.setStep(oldStep);
+        width = oldWidth;
+        height = oldHeight;
+        offsetX = oldOffsetX;
+        offsetY = oldOffsetY;
+
         Benchmark benchmark = new Benchmark();
-        bufferedImage = imageHandler.fillImage(divergenceIndexes, calculationHandler.maxIterations);
+        bufferedImage = imageHandler.fillImage(divergenceIndexes, calculationHandler.maxIterations, aliasingType);
         FGen.imageHandlerDuration = FGen.imageHandlerDuration.plus(benchmark.end());
     }
 }
