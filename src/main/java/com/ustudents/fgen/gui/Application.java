@@ -12,6 +12,8 @@ public class Application extends javafx.application.Application {
         stage.getIcons().add(new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png"))));
         stage.setTitle("FGen");
         stage.setScene(new MainWindow(1024, 720));
+        stage.setMinHeight(280);
+        stage.setMinWidth(640);
         stage.show();
     }
 

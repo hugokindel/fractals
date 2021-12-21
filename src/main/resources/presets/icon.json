@@ -4,11 +4,11 @@
 		{
 			"class": "PngGenerator",
 			"path": "icon.png",
-			"aliasingType": "X2",
+			"aliasingType": "X4",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "Psychedelic2ColorHandler"
+					"class": "LightPsychedelicColorHandler"
 				}
 			},
 			"calculationHandler": {
@@ -34,8 +34,8 @@
 				"maxIterations": 1000,
 				"radius": 2
 			},
-			"width": 1024,
-			"height": 1024,
+			"width": 256,
+			"height": 256,
 			"offsetX": 0.0,
 			"offsetY": 0.0
 		}
