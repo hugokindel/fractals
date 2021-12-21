@@ -4,6 +4,9 @@ import com.ustudents.fgen.common.json.JsonSerializable;
 
 @JsonSerializable(serializeClassName = true)
 public abstract class Generator {
+    @JsonSerializable(necessary = false)
+    public String name = "Default";
+
     @JsonSerializable
     public Integer width = 0;
 

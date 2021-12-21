@@ -48,6 +48,8 @@ public class FGen extends Program {
             if (loadedConfiguration == null) {
                 Out.printError("Trying to load an unknown preset!");
             }
+        } else {
+            loadedConfiguration = new Configuration();
         }
 
         if (type.equals("gui")) {

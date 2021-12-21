@@ -1,9 +1,24 @@
 package com.ustudents.fgen.gui;
 
+import com.ustudents.fgen.FGen;
+import com.ustudents.fgen.format.Configuration;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.util.Objects;
 
 public class MainWindow extends Window {
     public MainWindow(double width, double height) {
@@ -16,7 +31,22 @@ public class MainWindow extends Window {
 
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
+        MenuItem quitItem = new MenuItem("Quit");
+        quitItem.setOnAction(event -> Application.get().getMainStage().close());
+        fileMenu.getItems().add(quitItem);
         Menu helpMenu = new Menu("Help");
+        MenuItem aboutItem = new MenuItem("About FGen");
+        aboutItem.setOnAction(event -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(Application.get().getMainStage());
+            dialog.getIcons().add(new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png"))));
+            dialog.setTitle("About FGen");
+            dialog.setResizable(false);
+            dialog.setScene(new AboutWindow(400, 300));
+            dialog.show();
+        });
+        helpMenu.getItems().add(aboutItem);
         menuBar.getMenus().addAll(fileMenu, helpMenu);
         root.setTop(menuBar);
 
@@ -47,9 +77,20 @@ public class MainWindow extends Window {
             Button generatorPlusButton = new Button("Add Generator");
             generatorToolbar.getItems().add(generatorPlusButton);
             generatorBox.getChildren().add(generatorToolbar);
-            TreeView<String> generatorTree = new TreeView<>();
-            VBox.setVgrow(generatorTree, Priority.ALWAYS);
-            generatorBox.getChildren().add(generatorTree);
+            ListView<String> generatorsList = new ListView<>();
+            generatorPlusButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    generatorsList.getItems().add("Default");
+                }
+            });
+
+            for (int i = 0; i < FGen.get().loadedConfiguration.generators.size(); i++) {
+                generatorsList.getItems().add(FGen.get().loadedConfiguration.generators.get(i).name);
+            }
+
+            VBox.setVgrow(generatorsList, Priority.ALWAYS);
+            generatorBox.getChildren().add(generatorsList);
             generatorTab.setContent(generatorBox);
             generatorTabPane.getTabs().add(generatorTab);
             gridPane.add(generatorTabPane, 0, 0);
