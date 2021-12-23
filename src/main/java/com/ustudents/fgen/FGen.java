@@ -57,7 +57,7 @@ public class FGen extends Program {
         } else {
             if (loadedConfiguration != null) {
                 if (!shouldOnlyLoad) {
-                    for (Generator generator : loadedConfiguration.generators) {
+                    for (Generator generator : loadedConfiguration.getGenerators()) {
                         generator.generate();
                     }
                 }

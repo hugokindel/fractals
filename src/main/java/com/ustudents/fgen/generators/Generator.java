@@ -2,8 +2,12 @@ package com.ustudents.fgen.generators;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
 
+import java.util.UUID;
+
 @JsonSerializable(serializeClassName = true)
 public abstract class Generator {
+    private UUID id = null;
+
     @JsonSerializable(necessary = false)
     public String name = "Default";
 
@@ -31,4 +35,17 @@ public abstract class Generator {
     }
 
     public abstract void generate();
+
+    public UUID getId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

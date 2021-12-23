@@ -5,10 +5,14 @@ import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 import com.ustudents.fgen.common.json.JsonSerializableType;
 import com.ustudents.fgen.generators.Generator;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @JsonSerializable
 @SuppressWarnings("unchecked")
@@ -17,7 +21,9 @@ public class Configuration {
     public Integer version = 1;
 
     @JsonSerializable(type = JsonSerializableType.SerializableOnly)
-    public List<Generator> generators = new ArrayList<>();
+    private List<Generator> generators = new ArrayList<>();
+
+    private EventHandler<Event> onGeneratorAddedEvent = null;
 
     @JsonSerializableConstructor
     public void deserialize(Map<String, Object> elements) {
@@ -31,5 +37,18 @@ public class Configuration {
                 e.printStackTrace();
             }
         }
+    }
+
+    public List<Generator> getGenerators() {
+        return generators;
+    }
+
+    public void addGenerator(Generator generator) {
+        generators.add(generator);
+        onGeneratorAddedEvent.handle(new Event(null, null, null));
+    }
+
+    public void setOnGeneratorAdded(EventHandler<Event> value) {
+        onGeneratorAddedEvent = value;
     }
 }
