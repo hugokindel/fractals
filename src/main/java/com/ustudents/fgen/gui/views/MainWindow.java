@@ -4,37 +4,41 @@ import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.Window;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.util.Callback;
 
 import java.util.Objects;
 
 public class MainWindow extends Window {
     public BorderPane root = new BorderPane();
     public MenuBar menuBar = new MenuBar();
-    Menu fileMenu = new Menu("File");
-    MenuItem quitItem = new MenuItem("Quit");
-    Menu helpMenu = new Menu("Help");
-    MenuItem aboutItem = new MenuItem("About FGen");
-    GridPane contentGrid = new GridPane();
-    TabPane generatorTabPane = new TabPane();
-    Tab generatorTab = new Tab("Generators");
-    VBox generatorBox = new VBox();
-    ToolBar generatorToolbar = new ToolBar();
-    Button generatorPlusButton = new Button("Add Generator");
-    ListView<Generator> generatorsList = new ListView<>();
-    TabPane parametersTabPane = new TabPane();
-    Tab parametersTab = new Tab("Generator Properties");
-    TabPane previewTabPane = new TabPane();
-    Tab previewTab = new Tab("Fractal Preview");
-    StackPane fractalPreviewPane = new StackPane();
-    Image fractalPreviewImage = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
-    ImageView fractalPreviewImageView = new ImageView(fractalPreviewImage);
-    ToolBar toolbar = new ToolBar();
-    Label statusLabel = new Label("Ready.");
+    public Menu fileMenu = new Menu("File");
+    public MenuItem quitItem = new MenuItem("Quit");
+    public Menu helpMenu = new Menu("Help");
+    public MenuItem aboutItem = new MenuItem("About FGen");
+    public GridPane contentGrid = new GridPane();
+    public TabPane generatorTabPane = new TabPane();
+    public Tab generatorTab = new Tab("Generators");
+    public VBox generatorBox = new VBox();
+    public ToolBar generatorToolbar = new ToolBar();
+    public Button generatorPlusButton = new Button("Add Generator");
+    public ListView<Generator> generatorsList = new ListView<>();
+    public TabPane parametersTabPane = new TabPane();
+    public Tab propertiesTab = new Tab("Generator Properties");
+    public TabPane previewTabPane = new TabPane();
+    public Tab previewTab = new Tab("Fractal Preview");
+    public StackPane fractalPreviewPane = new StackPane();
+    public Image fractalPreviewImage = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
+    public ImageView fractalPreviewImageView = new ImageView(fractalPreviewImage);
+    public ToolBar toolbar = new ToolBar();
+    public Label statusLabel = new Label("Ready.");
 
     public MainWindow(double width, double height) {
         super(width, height);
@@ -48,7 +52,7 @@ public class MainWindow extends Window {
 
     public void createMenuBar() {
         quitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
-        quitItem.setOnAction(event -> Application.get().getMainStage().close());
+        quitItem.setOnAction(event -> Application.get().getCurrentStage().close());
         fileMenu.getItems().add(quitItem);
         helpMenu.getItems().add(aboutItem);
         menuBar.getMenus().addAll(fileMenu, helpMenu);
@@ -81,16 +85,19 @@ public class MainWindow extends Window {
         generatorTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         generatorToolbar.getItems().add(generatorPlusButton);
         generatorBox.getChildren().add(generatorToolbar);
+
         VBox.setVgrow(generatorsList, Priority.ALWAYS);
+        generatorsList.setEditable(true);
         generatorBox.getChildren().add(generatorsList);
         generatorTab.setContent(generatorBox);
+
         generatorTabPane.getTabs().add(generatorTab);
         contentGrid.add(generatorTabPane, 0, 0);
     }
 
     public void createGeneratorPropertiesTab() {
         parametersTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        parametersTabPane.getTabs().add(parametersTab);
+        parametersTabPane.getTabs().add(propertiesTab);
         contentGrid.add(parametersTabPane, 1, 0);
     }
 
@@ -107,5 +114,12 @@ public class MainWindow extends Window {
     public void createToolbar() {
         toolbar.getItems().add(statusLabel);
         root.setBottom(toolbar);
+    }
+
+    public void reloadProperties(Generator generator) {
+        VBox vBox = new VBox();
+        Label label = new Label(generator.name);
+        vBox.getChildren().add(label);
+        propertiesTab.setContent(vBox);
     }
 }
