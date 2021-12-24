@@ -1,28 +1,18 @@
 package com.ustudents.fgen.gui.controller;
 
 import com.ustudents.fgen.FGen;
-import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.format.Configuration;
-import com.ustudents.fgen.generators.EmptyGenerator;
-import com.ustudents.fgen.generators.Generator;
+import com.ustudents.fgen.generators.JpegGenerator;
+import com.ustudents.fgen.generators.SingleImageGenerator;
 import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.controls.GeneratorListCell;
 import com.ustudents.fgen.gui.views.AboutWindow;
 import com.ustudents.fgen.gui.views.MainWindow;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
 
 public class MainWindowController {
-    public MainWindow view = new MainWindow(1024, 720);
+    public MainWindow view = new MainWindow(1280, 720);
 
     public Configuration model = FGen.get().loadedConfiguration;
 
@@ -32,20 +22,20 @@ public class MainWindowController {
 
     public void setupEvents() {
         view.quitItem.setOnAction(event -> Application.get().close());
-        view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 300)));
+        view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 250)));
 
-        view.generatorPlusButton.setOnMouseClicked(event -> view.generatorsList.getItems().add(new EmptyGenerator()));
+        view.generatorPlusButton.setOnMouseClicked(event -> view.generatorsList.getItems().add(new JpegGenerator()));
 
-        view.generatorsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> view.reloadProperties(newValue));
+        view.generatorsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> view.reloadProperties((SingleImageGenerator)newValue));
         view.generatorsList.setCellFactory(listView -> {
             GeneratorListCell cell = new GeneratorListCell();
-            cell.setOnEdited(event -> view.reloadProperties(cell.getItem()));
+            cell.setOnEdited(event -> view.reloadProperties((SingleImageGenerator)cell.getItem()));
 
             ContextMenu contextMenu = new ContextMenu();
             cell.setContextMenu(contextMenu);
 
             MenuItem addItem = new MenuItem("Add Generator");
-            addItem.setOnAction(event -> listView.getItems().add(new EmptyGenerator()));
+            addItem.setOnAction(event -> listView.getItems().add(new JpegGenerator()));
             contextMenu.getItems().add(addItem);
 
             cell.itemProperty().addListener((observable, oldValue, newValue) -> {

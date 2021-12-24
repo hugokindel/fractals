@@ -2,9 +2,12 @@ package com.ustudents.fgen.gui.views;
 
 import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.utils.TextFieldUtil;
+import com.ustudents.fgen.fractals.JuliaSet;
 import com.ustudents.fgen.generators.Generator;
+import com.ustudents.fgen.generators.SingleImageGenerator;
 import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.Window;
+import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +23,22 @@ public class MainWindow extends Window {
     private enum GeneratorTypes {
         JPEG,
         PNG
+    }
+
+    private enum FractalTypes {
+        JULIA("Julia"),
+        MANDELBROT("Mandelbrot");
+
+        private String name;
+
+        private FractalTypes(String theType) {
+            this.name = theType;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     private enum CalculationHandlerTypes {
@@ -185,7 +204,7 @@ public class MainWindow extends Window {
         root.setBottom(toolbar);
     }
 
-    public void reloadProperties(Generator generator) {
+    public void reloadProperties(SingleImageGenerator generator) {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
@@ -207,7 +226,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Type");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -227,7 +246,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Path");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -244,7 +263,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Width");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -262,7 +281,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Height");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -280,7 +299,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Offset (X)");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -298,13 +317,174 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Offset (Y)");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
             TextField textField = new TextField("0.0");
             HBox.setHgrow(textField, Priority.ALWAYS);
             textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Fractal");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<FractalTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(FractalTypes.values()));
+            comboBox.setValue(FractalTypes.JULIA);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        if (generator.calculationHandler.fractal instanceof JuliaSet) {
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Complex (Real)");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField("-0.7269");
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Complex (Imaginary)");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField("0.1889");
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+        }
+
+        {
+            Label title = new Label("Complex Plane");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Start (Real)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("-1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Start (Imaginary)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("End  (Real)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("End (Imaginary)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("-1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Step");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.001");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleFilter));
             hBox.getChildren().add(textField);
 
             vBox.getChildren().add(hBox);
@@ -323,7 +503,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Type");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -342,7 +522,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Max Iterations");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -360,7 +540,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Radius");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -372,104 +552,43 @@ public class MainWindow extends Window {
             vBox.getChildren().add(hBox);
         }
 
-        {
-            Label title = new Label("Complex Plane");
-            title.setPadding(new Insets(0, 0, 8, 0));
-            title.setStyle("-fx-font-weight: bold");
-            vBox.getChildren().add(title);
+        if (generator.calculationHandler instanceof PoolCalculationHandler) {
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Parallelism Level");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField(String.valueOf(Runtime.getRuntime().availableProcessors()));
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Parallelism Threshold");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField(String.valueOf(PoolCalculationHandler.DEFAULT_PARALLELISM_THRESHOLD));
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
         }
-
-        {
-            HBox hBox = new HBox();
-            hBox.setPadding(new Insets(0, 0, 8, 0));
-            hBox.setAlignment(Pos.CENTER_LEFT);
-
-            Label label = new Label("Start (Real)");
-            label.setMinWidth(100);
-            label.setPadding(new Insets(0, 10, 0, 0));
-            hBox.getChildren().add(label);
-
-            TextField textField = new TextField("-1.0");
-            HBox.setHgrow(textField, Priority.ALWAYS);
-            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
-            hBox.getChildren().add(textField);
-
-            vBox.getChildren().add(hBox);
-        }
-
-        {
-            HBox hBox = new HBox();
-            hBox.setPadding(new Insets(0, 0, 8, 0));
-            hBox.setAlignment(Pos.CENTER_LEFT);
-
-            Label label = new Label("Start (Imaginary)");
-            label.setMinWidth(100);
-            label.setPadding(new Insets(0, 10, 0, 0));
-            hBox.getChildren().add(label);
-
-            TextField textField = new TextField("1.0");
-            HBox.setHgrow(textField, Priority.ALWAYS);
-            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
-            hBox.getChildren().add(textField);
-
-            vBox.getChildren().add(hBox);
-        }
-
-        {
-            HBox hBox = new HBox();
-            hBox.setPadding(new Insets(0, 0, 8, 0));
-            hBox.setAlignment(Pos.CENTER_LEFT);
-
-            Label label = new Label("End  (Real)");
-            label.setMinWidth(100);
-            label.setPadding(new Insets(0, 10, 0, 0));
-            hBox.getChildren().add(label);
-
-            TextField textField = new TextField("1.0");
-            HBox.setHgrow(textField, Priority.ALWAYS);
-            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
-            hBox.getChildren().add(textField);
-
-            vBox.getChildren().add(hBox);
-        }
-
-        {
-            HBox hBox = new HBox();
-            hBox.setPadding(new Insets(0, 0, 8, 0));
-            hBox.setAlignment(Pos.CENTER_LEFT);
-
-            Label label = new Label("End (Imaginary)");
-            label.setMinWidth(100);
-            label.setPadding(new Insets(0, 10, 0, 0));
-            hBox.getChildren().add(label);
-
-            TextField textField = new TextField("-1.0");
-            HBox.setHgrow(textField, Priority.ALWAYS);
-            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
-            hBox.getChildren().add(textField);
-
-            vBox.getChildren().add(hBox);
-        }
-
-        {
-            HBox hBox = new HBox();
-            hBox.setPadding(new Insets(0, 0, 8, 0));
-            hBox.setAlignment(Pos.CENTER_LEFT);
-
-            Label label = new Label("Step");
-            label.setMinWidth(100);
-            label.setPadding(new Insets(0, 10, 0, 0));
-            hBox.getChildren().add(label);
-
-            TextField textField = new TextField("0.001");
-            HBox.setHgrow(textField, Priority.ALWAYS);
-            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleFilter));
-            hBox.getChildren().add(textField);
-
-            vBox.getChildren().add(hBox);
-        }
-
-        // TODO: PoolCalculationHandler settings
 
         {
             Label title = new Label("Image Handler");
@@ -484,7 +603,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Type");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
@@ -510,7 +629,7 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Type");
-            label.setMinWidth(100);
+            label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
