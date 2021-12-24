@@ -76,5 +76,8 @@ public class MainWindowController {
         if (view.generatorsList.getItems().size() > 0) {
             view.generatorsList.getSelectionModel().select(0);
         }
+
+        Application.get().getCurrentStage().widthProperty().addListener((observable, oldValue, newValue) -> view.previewTab.setText(String.format("Fractal Preview (%dx%d)", (int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight())));
+        Application.get().getCurrentStage().heightProperty().addListener((observable, oldValue, newValue) -> view.previewTab.setText(String.format("Fractal Preview (%dx%d)", (int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight())));
     }
 }

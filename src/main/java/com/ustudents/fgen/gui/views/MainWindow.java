@@ -7,16 +7,25 @@ import com.ustudents.fgen.gui.Window;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 
 import java.util.Objects;
 
 public class MainWindow extends Window {
+    private enum GeneratorTypes {
+        JPEG,
+        PNG
+    }
+
     public BorderPane root = new BorderPane();
     public MenuBar menuBar = new MenuBar();
     public Menu fileMenu = new Menu("File");
@@ -34,7 +43,6 @@ public class MainWindow extends Window {
     public Tab propertiesTab = new Tab("Generator Properties");
     public TabPane previewTabPane = new TabPane();
     public Tab previewTab = new Tab("Fractal Preview");
-    public StackPane fractalPreviewPane = new StackPane();
     public Image fractalPreviewImage = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
     public ImageView fractalPreviewImageView = new ImageView(fractalPreviewImage);
     public ToolBar toolbar = new ToolBar();
@@ -60,19 +68,29 @@ public class MainWindow extends Window {
     }
 
     public void createMainGrid() {
-        for (int i = 0; i < 2; i++) {
+        {
             ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth(20);
+            columnConstraints.setPercentWidth(15);
             contentGrid.getColumnConstraints().add(columnConstraints);
         }
 
-        ColumnConstraints columnConstraints = new ColumnConstraints();
-        columnConstraints.setPercentWidth(60);
-        contentGrid.getColumnConstraints().add(columnConstraints);
+        {
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setPercentWidth(30);
+            contentGrid.getColumnConstraints().add(columnConstraints);
+        }
 
-        RowConstraints rowConstraints = new RowConstraints();
-        rowConstraints.setPercentHeight(100);
-        contentGrid.getRowConstraints().add(rowConstraints);
+        {
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setPercentWidth(55);
+            contentGrid.getColumnConstraints().add(columnConstraints);
+        }
+
+        {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setPercentHeight(100);
+            contentGrid.getRowConstraints().add(rowConstraints);
+        }
 
         createGeneratorsTab();
         createGeneratorPropertiesTab();
@@ -103,10 +121,9 @@ public class MainWindow extends Window {
 
     public void createFractalPreviewTab() {
         previewTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        fractalPreviewImageView.fitWidthProperty().bind(fractalPreviewPane.widthProperty());
-        fractalPreviewImageView.fitHeightProperty().bind(fractalPreviewPane.heightProperty());
-        fractalPreviewPane.getChildren().add(fractalPreviewImageView);
-        previewTab.setContent(fractalPreviewPane);
+        fractalPreviewImageView.fitWidthProperty().bind(previewTabPane.widthProperty());
+        fractalPreviewImageView.fitHeightProperty().bind(previewTabPane.heightProperty());
+        previewTab.setContent(fractalPreviewImageView);
         previewTabPane.getTabs().add(previewTab);
         contentGrid.add(previewTabPane, 2, 0);
     }
@@ -117,9 +134,55 @@ public class MainWindow extends Window {
     }
 
     public void reloadProperties(Generator generator) {
+        ScrollPane scrollPane = new ScrollPane();
+
         VBox vBox = new VBox();
-        Label label = new Label(generator.name);
-        vBox.getChildren().add(label);
-        propertiesTab.setContent(vBox);
+        vBox.setPadding(new Insets(8, 10, 10, 10));
+
+        {
+            Label title = new Label("Generator");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        // Generator type.
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<GeneratorTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList( GeneratorTypes.values()));
+            comboBox.setValue(GeneratorTypes.JPEG);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        // Generator type.
+        {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Path");
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("fractal.jpeg");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        scrollPane.setContent(vBox);
+
+        propertiesTab.setContent(scrollPane);
     }
 }
