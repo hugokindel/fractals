@@ -100,9 +100,14 @@ public class MainWindow extends Window {
     public BorderPane root = new BorderPane();
     public MenuBar menuBar = new MenuBar();
     public Menu fileMenu = new Menu("File");
+    public MenuItem newItem = new MenuItem("New");
+    public MenuItem loadItem = new MenuItem("Load Configuration");
+    public MenuItem saveItem = new MenuItem("Save");
+    public MenuItem saveAsItem = new MenuItem("Save As...");
+    public MenuItem exportItem = new MenuItem("Export...");
     public MenuItem quitItem = new MenuItem("Quit");
     public Menu helpMenu = new Menu("Help");
-    public MenuItem aboutItem = new MenuItem("About FGen");
+    public MenuItem aboutItem = new MenuItem("About");
     public GridPane contentGrid = new GridPane();
     public TabPane generatorTabPane = new TabPane();
     public Tab generatorTab = new Tab("Generators");
@@ -130,9 +135,20 @@ public class MainWindow extends Window {
     }
 
     public void createMenuBar() {
+        newItem.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
+        saveItem.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+        exportItem.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
         quitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
-        quitItem.setOnAction(event -> Application.get().getCurrentStage().close());
-        fileMenu.getItems().add(quitItem);
+        fileMenu.getItems().addAll(
+                newItem,
+                new SeparatorMenuItem(),
+                saveItem,
+                saveAsItem,
+                new SeparatorMenuItem(),
+                exportItem,
+                new SeparatorMenuItem(),
+                quitItem
+        );
         helpMenu.getItems().add(aboutItem);
         menuBar.getMenus().addAll(fileMenu, helpMenu);
         root.setTop(menuBar);
@@ -235,24 +251,6 @@ public class MainWindow extends Window {
             HBox.setHgrow(comboBox, Priority.ALWAYS);
             comboBox.setMaxWidth(Double.MAX_VALUE);
             hBox.getChildren().add(comboBox);
-
-            vBox.getChildren().add(hBox);
-        }
-
-        // Generator path.
-        {
-            HBox hBox = new HBox();
-            hBox.setPadding(new Insets(0, 0, 8, 0));
-            hBox.setAlignment(Pos.CENTER_LEFT);
-
-            Label label = new Label("Path");
-            label.setMinWidth(130);
-            label.setPadding(new Insets(0, 10, 0, 0));
-            hBox.getChildren().add(label);
-
-            TextField textField = new TextField("fractal.jpeg");
-            HBox.setHgrow(textField, Priority.ALWAYS);
-            hBox.getChildren().add(textField);
 
             vBox.getChildren().add(hBox);
         }
