@@ -111,7 +111,7 @@ public class MainWindow extends Window {
     public Button generatorPlusButton = new Button("Add Generator");
     public ListView<Generator> generatorsList = new ListView<>();
     public TabPane parametersTabPane = new TabPane();
-    public Tab propertiesTab = new Tab("Generator Properties");
+    public Tab propertiesTab = new Tab("Properties");
     public TabPane previewTabPane = new TabPane();
     public Tab previewTab = new Tab("Fractal Preview");
     public Image fractalPreviewImage = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
