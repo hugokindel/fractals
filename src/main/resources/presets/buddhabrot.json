@@ -2,6 +2,7 @@
   "version": 1,
   "generators": [
     {
+      "name": "test",
       "class": "JpegGenerator",
       "path": "buddhabrot.jpeg",
       "imageHandler": {

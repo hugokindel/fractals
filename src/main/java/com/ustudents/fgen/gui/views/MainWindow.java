@@ -1,12 +1,10 @@
 package com.ustudents.fgen.gui.views;
 
 import com.ustudents.fgen.FGen;
+import com.ustudents.fgen.common.utils.TextFieldUtil;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.Window;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,8 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.util.Callback;
 
 import java.util.Objects;
 
@@ -24,6 +20,62 @@ public class MainWindow extends Window {
     private enum GeneratorTypes {
         JPEG,
         PNG
+    }
+
+    private enum CalculationHandlerTypes {
+        SIMPLE("Simple"),
+        POOL("Pool"),
+        STREAM("Stream"),
+        BUDDHA_SIMPLE("Simple Buddha"),
+        BUDDHA_STREAM("Simple Stream");
+
+        private String name;
+
+        private CalculationHandlerTypes(String theType) {
+            this.name = theType;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    private enum ImageHandlerTypes {
+        SIMPLE("Simple"),
+        POOL("Pool"),
+        STREAM("Stream");
+
+        private String name;
+
+        private ImageHandlerTypes(String theType) {
+            this.name = theType;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    private enum ColorHandlerTypes {
+        BASIC("Basic"),
+        VERY_RED("Very Red"),
+        HSB("Hsb"),
+        DARK_PSYCHEDELIC("Dark Psychedelic"),
+        LIGHT_PSYCHEDELIC("Light Psychedelic"),
+        BUDDHA("Buddha");
+
+        private String name;
+
+        private ColorHandlerTypes(String theType) {
+            this.name = theType;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     public BorderPane root = new BorderPane();
@@ -70,7 +122,7 @@ public class MainWindow extends Window {
     public void createMainGrid() {
         {
             ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth(15);
+            columnConstraints.setPercentWidth(20);
             contentGrid.getColumnConstraints().add(columnConstraints);
         }
 
@@ -82,7 +134,7 @@ public class MainWindow extends Window {
 
         {
             ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth(55);
+            columnConstraints.setPercentWidth(50);
             contentGrid.getColumnConstraints().add(columnConstraints);
         }
 
@@ -135,6 +187,8 @@ public class MainWindow extends Window {
 
     public void reloadProperties(Generator generator) {
         ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(8, 10, 10, 10));
@@ -153,10 +207,11 @@ public class MainWindow extends Window {
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Type");
+            label.setMinWidth(100);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
-            ComboBox<GeneratorTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList( GeneratorTypes.values()));
+            ComboBox<GeneratorTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(GeneratorTypes.values()));
             comboBox.setValue(GeneratorTypes.JPEG);
             HBox.setHgrow(comboBox, Priority.ALWAYS);
             comboBox.setMaxWidth(Double.MAX_VALUE);
@@ -165,18 +220,305 @@ public class MainWindow extends Window {
             vBox.getChildren().add(hBox);
         }
 
-        // Generator type.
+        // Generator path.
         {
             HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
             hBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Path");
+            label.setMinWidth(100);
             label.setPadding(new Insets(0, 10, 0, 0));
             hBox.getChildren().add(label);
 
             TextField textField = new TextField("fractal.jpeg");
             HBox.setHgrow(textField, Priority.ALWAYS);
             hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Width");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("256");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Height");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("256");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Offset (X)");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Offset (Y)");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Calculation Handler");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<CalculationHandlerTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(CalculationHandlerTypes.values()));
+            comboBox.setValue(CalculationHandlerTypes.SIMPLE);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Max Iterations");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1000");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Radius");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("2");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Complex Plane");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Start (Real)");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("-1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Start (Imaginary)");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("End  (Real)");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("End (Imaginary)");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("-1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Step");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.001");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        // TODO: PoolCalculationHandler settings
+
+        {
+            Label title = new Label("Image Handler");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<ImageHandlerTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(ImageHandlerTypes.values()));
+            comboBox.setValue(ImageHandlerTypes.SIMPLE);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Color Handler");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(100);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<ColorHandlerTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(ColorHandlerTypes.values()));
+            comboBox.setValue(ColorHandlerTypes.BASIC);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
 
             vBox.getChildren().add(hBox);
         }
