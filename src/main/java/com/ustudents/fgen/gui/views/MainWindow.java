@@ -102,6 +102,7 @@ public class MainWindow extends Window {
     public MenuBar menuBar = new MenuBar();
     public Menu fileMenu = new Menu("File");
     public MenuItem newItem = new MenuItem("New");
+    public MenuItem closeItem = new MenuItem("Close");
     public MenuItem loadItem = new MenuItem("Load...");
     public MenuItem saveItem = new MenuItem("Save");
     public MenuItem saveAsItem = new MenuItem("Save As...");
@@ -145,6 +146,8 @@ public class MainWindow extends Window {
         quitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         fileMenu.getItems().addAll(
                 newItem,
+                new SeparatorMenuItem(),
+                closeItem,
                 new SeparatorMenuItem(),
                 loadItem,
                 new SeparatorMenuItem(),
