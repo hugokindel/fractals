@@ -2,6 +2,8 @@ package com.ustudents.fgen.gui.controls;
 
 import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.generators.Generator;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContentDisplay;

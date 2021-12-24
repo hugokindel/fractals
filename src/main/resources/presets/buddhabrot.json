@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "generators": [
+    {
+      "class": "JpegGenerator",
+      "path": "buddhabrot.jpeg",
+      "imageHandler": {
+        "class": "SimpleImageHandler",
+        "colorHandler": {
+          "class": "BuddhaColorHandler"
+        }
+      },
+      "calculationHandler": {
+        "class": "BuddhaStreamCalculationHandler",
+        "fractal": {
+          "class": "MandelbrotSet"
+        },
+        "plane": {
+          "start": {
+            "real": -1.0,
+            "imaginary": 1.0
+          },
+          "end": {
+            "real": 1.0,
+            "imaginary": -1.0
+          },
+          "step": 0.001
+        },
+        "maxIterations": 20000,
+        "radius": 2
+      },
+      "width": 4096,
+      "height": 4096,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    }
+  ]
+}
