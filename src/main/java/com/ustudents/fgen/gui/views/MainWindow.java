@@ -101,11 +101,13 @@ public class MainWindow extends Window {
     public MenuBar menuBar = new MenuBar();
     public Menu fileMenu = new Menu("File");
     public MenuItem newItem = new MenuItem("New");
-    public MenuItem loadItem = new MenuItem("Load Configuration");
+    public MenuItem loadItem = new MenuItem("Load...");
     public MenuItem saveItem = new MenuItem("Save");
     public MenuItem saveAsItem = new MenuItem("Save As...");
     public MenuItem exportItem = new MenuItem("Export...");
     public MenuItem quitItem = new MenuItem("Quit");
+    public Menu viewMenu = new Menu("View");
+    public CheckMenuItem changePreviewItem = new CheckMenuItem("Play Preview");
     public Menu helpMenu = new Menu("Help");
     public MenuItem aboutItem = new MenuItem("About");
     public GridPane contentGrid = new GridPane();
@@ -136,11 +138,14 @@ public class MainWindow extends Window {
 
     public void createMenuBar() {
         newItem.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
+        loadItem.setAccelerator(KeyCombination.keyCombination("Ctrl+L"));
         saveItem.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
         exportItem.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
         quitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         fileMenu.getItems().addAll(
                 newItem,
+                new SeparatorMenuItem(),
+                loadItem,
                 new SeparatorMenuItem(),
                 saveItem,
                 saveAsItem,
@@ -149,8 +154,11 @@ public class MainWindow extends Window {
                 new SeparatorMenuItem(),
                 quitItem
         );
+        changePreviewItem.setSelected(true);
+        changePreviewItem.setAccelerator(KeyCombination.keyCombination("Ctrl+P"));
+        viewMenu.getItems().add(changePreviewItem);
         helpMenu.getItems().add(aboutItem);
-        menuBar.getMenus().addAll(fileMenu, helpMenu);
+        menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
         root.setTop(menuBar);
     }
 
