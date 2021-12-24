@@ -21,6 +21,10 @@ public class MainWindowController {
     }
 
     public void setupEvents() {
+        view.newItem.setOnAction(event -> {
+            model.generators.clear();
+            view.reloadProperties(null);
+        });
         view.quitItem.setOnAction(event -> Application.get().close());
         view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 250)));
 

@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 
 import java.util.Objects;
 
@@ -197,6 +198,7 @@ public class MainWindow extends Window {
     public void createGeneratorsTab() {
         generatorTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         generatorToolbar.getItems().add(generatorPlusButton);
+        generatorToolbar.setStyle("-fx-border-width: 0 1 0 0; -fx-border-color: #C8C8C8;");
         generatorBox.getChildren().add(generatorToolbar);
 
         VBox.setVgrow(generatorsList, Priority.ALWAYS);
@@ -229,12 +231,27 @@ public class MainWindow extends Window {
     }
 
     public void reloadProperties(SingleImageGenerator generator) {
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
+        reloadPreview(generator);
 
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(8, 10, 10, 10));
+
+        if (generator == null) {
+            vBox.setStyle("-fx-border-width: 0 1 1 0; -fx-border-color: #C8C8C8;");
+            Label title = new Label("No Generator Selected");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            title.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(title);
+            vBox.setAlignment(Pos.CENTER);
+            propertiesTab.setContent(vBox);
+            return;
+        }
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setStyle("-fx-border-width: 0 1 1 0; -fx-border-color: #C8C8C8;");
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
 
         {
             Label title = new Label("Generator");
@@ -649,7 +666,23 @@ public class MainWindow extends Window {
         }
 
         scrollPane.setContent(vBox);
-
         propertiesTab.setContent(scrollPane);
+    }
+
+    public void reloadPreview(SingleImageGenerator generator) {
+        if (generator == null) {
+            VBox vBox = new VBox();
+            vBox.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #C8C8C8;");
+            vBox.setPadding(new Insets(8, 10, 10, 10));
+            Label title = new Label("No Preview Available");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            title.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(title);
+            vBox.setAlignment(Pos.CENTER);
+            previewTab.setContent(vBox);
+        } else {
+            previewTab.setContent(fractalPreviewImageView);
+        }
     }
 }
