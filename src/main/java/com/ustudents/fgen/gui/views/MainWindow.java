@@ -4,8 +4,9 @@ import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.utils.TextFieldUtil;
 import com.ustudents.fgen.fractals.JuliaSet;
 import com.ustudents.fgen.generators.Generator;
+import com.ustudents.fgen.generators.JpegGenerator;
+import com.ustudents.fgen.generators.PngGenerator;
 import com.ustudents.fgen.generators.SingleImageGenerator;
-import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.Window;
 import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
 import javafx.collections.FXCollections;
@@ -24,6 +25,25 @@ public class MainWindow extends Window {
     private enum GeneratorTypes {
         JPEG,
         PNG
+    }
+
+    private enum AliasingTypes {
+        X1("x1"),
+        X2("x2"),
+        X4("x4"),
+        X8("x8"),
+        X16("x16");
+
+        private String name;
+
+        private AliasingTypes(String theType) {
+            this.name = theType;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     private enum FractalTypes {
@@ -103,7 +123,7 @@ public class MainWindow extends Window {
     public Menu fileMenu = new Menu("File");
     public MenuItem newItem = new MenuItem("New");
     public MenuItem closeItem = new MenuItem("Close");
-    public MenuItem loadItem = new MenuItem("Load...");
+    public MenuItem openItem = new MenuItem("Open...");
     public MenuItem saveItem = new MenuItem("Save");
     public MenuItem saveAsItem = new MenuItem("Save As...");
     public MenuItem exportItem = new MenuItem("Export...");
@@ -112,6 +132,7 @@ public class MainWindow extends Window {
     public CheckMenuItem changePreviewItem = new CheckMenuItem("Play Preview");
     public Menu helpMenu = new Menu("Help");
     public MenuItem aboutItem = new MenuItem("About");
+    ScrollPane scrollPane = new ScrollPane();
     public GridPane contentGrid = new GridPane();
     public TabPane generatorTabPane = new TabPane();
     public Tab generatorTab = new Tab("Generators");
@@ -140,16 +161,16 @@ public class MainWindow extends Window {
 
     public void createMenuBar() {
         newItem.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
-        loadItem.setAccelerator(KeyCombination.keyCombination("Ctrl+L"));
+        openItem.setAccelerator(KeyCombination.keyCombination("Ctrl+L"));
         saveItem.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
         exportItem.setAccelerator(KeyCombination.keyCombination("Ctrl+E"));
         quitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         fileMenu.getItems().addAll(
                 newItem,
                 new SeparatorMenuItem(),
-                closeItem,
+                openItem,
                 new SeparatorMenuItem(),
-                loadItem,
+                closeItem,
                 new SeparatorMenuItem(),
                 saveItem,
                 saveAsItem,
@@ -233,9 +254,7 @@ public class MainWindow extends Window {
         root.setBottom(toolbar);
     }
 
-    public void reloadProperties(SingleImageGenerator generator) {
-        reloadPreview(generator);
-
+    public void reloadProperties(SingleImageGenerator generator, boolean showPreview) {
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(8, 10, 10, 10));
 
@@ -251,7 +270,6 @@ public class MainWindow extends Window {
             return;
         }
 
-        ScrollPane scrollPane = new ScrollPane();
         scrollPane.setStyle("-fx-border-width: 0 1 1 0; -fx-border-color: #C8C8C8;");
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
@@ -263,7 +281,6 @@ public class MainWindow extends Window {
             vBox.getChildren().add(title);
         }
 
-        // Generator type.
         {
             HBox hBox = new HBox();
             hBox.setPadding(new Insets(0, 0, 8, 0));
@@ -279,6 +296,31 @@ public class MainWindow extends Window {
             HBox.setHgrow(comboBox, Priority.ALWAYS);
             comboBox.setMaxWidth(Double.MAX_VALUE);
             hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            String path;
+
+            if (generator instanceof JpegGenerator) {
+                path = ((JpegGenerator)generator).path;
+            } else {
+                path = ((PngGenerator)generator).path;
+            }
+
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Path");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField(path);
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            hBox.getChildren().add(textField);
 
             vBox.getChildren().add(hBox);
         }
@@ -351,6 +393,25 @@ public class MainWindow extends Window {
             HBox.setHgrow(textField, Priority.ALWAYS);
             textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
             hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Anti-Aliasing");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<AliasingTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(AliasingTypes.values()));
+            comboBox.setValue(AliasingTypes.X1);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
 
             vBox.getChildren().add(hBox);
         }
@@ -669,11 +730,12 @@ public class MainWindow extends Window {
         }
 
         scrollPane.setContent(vBox);
+
         propertiesTab.setContent(scrollPane);
     }
 
-    public void reloadPreview(SingleImageGenerator generator) {
-        if (generator == null) {
+    public void reloadPreview(SingleImageGenerator generator, boolean showPreview) {
+        if (!showPreview || generator == null) {
             VBox vBox = new VBox();
             vBox.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #C8C8C8;");
             vBox.setPadding(new Insets(8, 10, 10, 10));
@@ -687,5 +749,9 @@ public class MainWindow extends Window {
         } else {
             previewTab.setContent(fractalPreviewImageView);
         }
+    }
+
+    public void reloadPreviewTitle(int width, int height, boolean showPreview) {
+        previewTab.setText(String.format("Fractal Preview (%dx%d)%s", width, height, showPreview ? "" : " - Paused"));
     }
 }
