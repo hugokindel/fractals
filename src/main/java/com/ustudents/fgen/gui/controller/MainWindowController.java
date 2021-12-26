@@ -275,6 +275,8 @@ public class MainWindowController {
         } else {
             Application.get().getCurrentStage().setTitle("FGen");
         }
+
+        view.previewTab.setText(String.format("Fractal Preview (%dx%d)", (int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight()));
     }
 
     public void updateMenu() {
