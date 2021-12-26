@@ -1,6 +1,7 @@
 package com.ustudents.fgen.handlers.calculation;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.utils.Pool;
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.maths.Complex;
@@ -55,7 +56,7 @@ public class PoolCalculationHandler extends CalculationHandler {
 
         private void computeDirectly() {
             for (int i = startIndex; i < endIndex; i++) {
-                int y = i / height;
+                int y = i / width;
                 int x = i % width;
                 Complex z0 = fractal.getZ0(plane, x, y, originX, originY, offsetX, offsetY);
                 Function<Complex, Complex> f = fractal.getF(plane, x, y, originX, originY, offsetX, offsetY);
@@ -94,9 +95,7 @@ public class PoolCalculationHandler extends CalculationHandler {
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
         CalculationTask work = new CalculationTask(0, width * height, width, height, originX, originY, offsetX, offsetY, divergenceIndexes);
-
         Pool.get(parallelismLevel).invoke(work);
-
         return divergenceIndexes;
     }
 }

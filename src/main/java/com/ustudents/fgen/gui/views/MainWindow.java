@@ -752,6 +752,13 @@ public class MainWindow extends Window {
     }
 
     public void reloadPreviewTitle(int width, int height, boolean showPreview) {
-        previewTab.setText(String.format("Fractal Preview (%dx%d)%s", width, height, showPreview ? "" : " - Paused"));
+        previewTab.setText(String.format("Fractal Preview (%dx%d)", width, height));
+        if (!showPreview) {
+            statusLabel.setText("Paused.");
+        } else {
+            if (!statusLabel.getText().equals("Generating...")) {
+                statusLabel.setText("Ready.");
+            }
+        }
     }
 }

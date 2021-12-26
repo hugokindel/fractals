@@ -2,7 +2,6 @@ package com.ustudents.fgen.gui.controller;
 
 import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.Json;
-import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.format.Configuration;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.generators.JpegGenerator;
@@ -13,6 +12,8 @@ import com.ustudents.fgen.gui.controls.GeneratorListCell;
 import com.ustudents.fgen.gui.views.AboutWindow;
 import com.ustudents.fgen.gui.views.MainWindow;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
@@ -20,18 +21,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
-import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.concurrent.CountDownLatch;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainWindowController {
     public class PreviewUpdator extends Service<Void> {
+        public boolean wait;
+
         @Override
         protected Task<Void> createTask() {
             return new Task<>() {
@@ -45,6 +46,14 @@ public class MainWindowController {
         }
 
         public synchronized void update() {
+            if (wait) {
+                try {
+                    wait(250);
+                } catch (Exception ignored) {
+
+                }
+            }
+
             if (showPreview && view.generatorsList.getSelectionModel().getSelectedItem() != null) {
                 Platform.runLater(() -> view.statusLabel.setText("Generating..."));
 
@@ -62,12 +71,7 @@ public class MainWindowController {
         }
 
         public synchronized void sendUpdate() {
-            if (service.getState() == State.RUNNING) {
-                cancel();
-            }
-
-            reset();
-            start();
+            restart();
         }
     }
 
@@ -201,8 +205,8 @@ public class MainWindowController {
             return cell;
         });
 
-        Application.get().getCurrentStage().widthProperty().addListener((observable, oldValue, newValue) -> view.reloadPreviewTitle((int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight(), showPreview));
-        Application.get().getCurrentStage().heightProperty().addListener((observable, oldValue, newValue) -> view.reloadPreviewTitle((int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight(), showPreview));
+        Application.get().getCurrentStage().widthProperty().addListener(listener);
+        Application.get().getCurrentStage().heightProperty().addListener(listener);
     }
 
     private void clearAll() {
@@ -218,6 +222,7 @@ public class MainWindowController {
         view.generatorsList.getItems().add((SingleImageGenerator)configuration.generators.get(0));
         view.generatorsList.getSelectionModel().select(view.generatorsList.getItems().size() - 1);
         reload(getLastGenerator());
+        service.sendUpdate();
         view.exportItem.setDisable(false);
         view.closeItem.setDisable(false);
         view.saveItem.setDisable(false);
@@ -275,4 +280,33 @@ public class MainWindowController {
             saveAction();
         }
     }
+
+    final ChangeListener<Number> listener = new ChangeListener<Number>()
+    {
+        final Timer timer = new Timer(); // uses a timer to call your resize method
+        TimerTask task = null; // task to execute after defined delay
+        final long delayTime = 200; // delay that has to pass in order to consider an operation done
+
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, final Number newValue)
+        {
+            view.reloadPreviewTitle((int) view.previewTabPane.getWidth(), (int) view.previewTabPane.getHeight(), showPreview);
+
+            if (task != null)
+            { // there was already a task scheduled from the previous operation ...
+                task.cancel(); // cancel it, we have a new size to consider
+            }
+
+            task = new TimerTask() // create new task that calls your resize operation
+            {
+                @Override
+                public void run()
+                {
+                    Platform.runLater(() -> service.sendUpdate());
+                }
+            };
+            // schedule new task
+            timer.schedule(task, delayTime);
+        }
+    };
 }
