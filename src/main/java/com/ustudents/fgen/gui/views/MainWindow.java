@@ -22,12 +22,12 @@ import javafx.scene.text.TextAlignment;
 import java.util.Objects;
 
 public class MainWindow extends Window {
-    private enum GeneratorTypes {
+    public enum GeneratorTypes {
         JPEG,
         PNG
     }
 
-    private enum AliasingTypes {
+    public enum AliasingTypes {
         X1("x1"),
         X2("x2"),
         X4("x4"),
@@ -46,7 +46,7 @@ public class MainWindow extends Window {
         }
     }
 
-    private enum FractalTypes {
+    public enum FractalTypes {
         JULIA("Julia"),
         MANDELBROT("Mandelbrot");
 
@@ -62,7 +62,7 @@ public class MainWindow extends Window {
         }
     }
 
-    private enum CalculationHandlerTypes {
+    public enum CalculationHandlerTypes {
         SIMPLE("Simple"),
         POOL("Pool"),
         STREAM("Stream"),
@@ -81,7 +81,7 @@ public class MainWindow extends Window {
         }
     }
 
-    private enum ImageHandlerTypes {
+    public enum ImageHandlerTypes {
         SIMPLE("Simple"),
         POOL("Pool"),
         STREAM("Stream");
@@ -98,7 +98,7 @@ public class MainWindow extends Window {
         }
     }
 
-    private enum ColorHandlerTypes {
+    public enum ColorHandlerTypes {
         BASIC("Basic"),
         VERY_RED("Very Red"),
         HSB("Hsb"),
@@ -132,7 +132,7 @@ public class MainWindow extends Window {
     public CheckMenuItem changePreviewItem = new CheckMenuItem("Play Preview");
     public Menu helpMenu = new Menu("Help");
     public MenuItem aboutItem = new MenuItem("About");
-    ScrollPane scrollPane = new ScrollPane();
+    public ScrollPane scrollPane = new ScrollPane();
     public GridPane contentGrid = new GridPane();
     public TabPane generatorTabPane = new TabPane();
     public Tab generatorTab = new Tab("Generators");
@@ -144,7 +144,6 @@ public class MainWindow extends Window {
     public Tab propertiesTab = new Tab("Properties");
     public TabPane previewTabPane = new TabPane();
     public Tab previewTab = new Tab("Fractal Preview");
-    public Image fractalPreviewImage = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
     public ImageView fractalPreviewImageView = new ImageView();
     public ToolBar toolbar = new ToolBar();
     public Label statusLabel = new Label("Ready.");
@@ -237,6 +236,9 @@ public class MainWindow extends Window {
     public void createGeneratorPropertiesTab() {
         parametersTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         parametersTabPane.getTabs().add(propertiesTab);
+        scrollPane.setStyle("-fx-border-width: 0 1 1 0; -fx-border-color: #C8C8C8;");
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
         contentGrid.add(parametersTabPane, 1, 0);
     }
 
@@ -730,35 +732,6 @@ public class MainWindow extends Window {
         }
 
         scrollPane.setContent(vBox);
-
         propertiesTab.setContent(scrollPane);
-    }
-
-    public void reloadPreview(SingleImageGenerator generator, boolean showPreview) {
-        if (!showPreview || generator == null || fractalPreviewImageView.getImage() == null) {
-            VBox vBox = new VBox();
-            vBox.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #C8C8C8;");
-            vBox.setPadding(new Insets(8, 10, 10, 10));
-            Label title = new Label("No Preview Available");
-            title.setPadding(new Insets(0, 0, 8, 0));
-            title.setStyle("-fx-font-weight: bold");
-            title.setTextAlignment(TextAlignment.CENTER);
-            vBox.getChildren().add(title);
-            vBox.setAlignment(Pos.CENTER);
-            previewTab.setContent(vBox);
-        } else {
-            previewTab.setContent(fractalPreviewImageView);
-        }
-    }
-
-    public void reloadPreviewTitle(int width, int height, boolean showPreview) {
-        previewTab.setText(String.format("Fractal Preview (%dx%d)", width, height));
-        if (!showPreview) {
-            statusLabel.setText("Paused.");
-        } else {
-            if (!statusLabel.getText().equals("Generating...")) {
-                statusLabel.setText("Ready.");
-            }
-        }
     }
 }

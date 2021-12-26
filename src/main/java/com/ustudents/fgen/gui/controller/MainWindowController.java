@@ -2,7 +2,9 @@ package com.ustudents.fgen.gui.controller;
 
 import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.Json;
+import com.ustudents.fgen.common.utils.TextFieldUtil;
 import com.ustudents.fgen.format.Configuration;
+import com.ustudents.fgen.fractals.JuliaSet;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.generators.JpegGenerator;
 import com.ustudents.fgen.generators.PngGenerator;
@@ -11,16 +13,22 @@ import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.controls.GeneratorListCell;
 import com.ustudents.fgen.gui.views.AboutWindow;
 import com.ustudents.fgen.gui.views.MainWindow;
+import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -28,106 +36,88 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainWindowController {
-    public class PreviewUpdator extends Service<Void> {
-        public boolean wait;
+    public class PreviewService extends Service<Void> {
+        public boolean isWorking = false;
 
         @Override
         protected Task<Void> createTask() {
             return new Task<>() {
                 @Override
                 protected Void call() {
-                    update();
-
+                    logic();
                     return null;
                 }
             };
         }
 
-        public synchronized void update() {
-            if (wait) {
-                try {
-                    wait(250);
-                } catch (Exception ignored) {
+        public void logic() {
+            isWorking = true;
+            Platform.runLater(() -> updatePreview(true));
 
-                }
-            }
-
-            if (showPreview && view.generatorsList.getSelectionModel().getSelectedItem() != null) {
-                Platform.runLater(() -> view.statusLabel.setText("Generating..."));
-
-                view.generatorsList.getSelectionModel().getSelectedItem().width = (int)view.previewTabPane.getWidth();
-                view.generatorsList.getSelectionModel().getSelectedItem().height = (int)view.previewTabPane.getHeight();
-                view.generatorsList.getSelectionModel().getSelectedItem().generate();
-
-                Platform.runLater(() -> {
-                    view.fractalPreviewImage = SwingFXUtils.toFXImage(view.generatorsList.getSelectionModel().getSelectedItem().bufferedImage, null);
-                    view.fractalPreviewImageView.setImage(view.fractalPreviewImage);
-                    view.reloadPreview(view.generatorsList.getSelectionModel().getSelectedItem(), showPreview);
-                    view.statusLabel.setText("Ready.");
-                });
-            }
+            view.generatorsList.getSelectionModel().getSelectedItem().width = (int)view.previewTabPane.getWidth();
+            view.generatorsList.getSelectionModel().getSelectedItem().height = (int)view.previewTabPane.getHeight();
+            view.generatorsList.getSelectionModel().getSelectedItem().generate();
+            previewImage = SwingFXUtils.toFXImage(view.generatorsList.getSelectionModel().getSelectedItem().bufferedImage, null);
+            isWorking = false;
+            Platform.runLater(() -> updatePreview(true));
         }
 
-        public synchronized void sendUpdate() {
-            restart();
+        public void update() {
+            if (shouldShowPreview && getSelectedGenerator() != null) {
+                previewImage = null;
+                restart();
+            }
         }
     }
 
     public MainWindow view = new MainWindow(1280, 720);
-
-    public boolean showPreview = true;
-
-    public PreviewUpdator service = new PreviewUpdator();
+    public PreviewService previewService = new PreviewService();
+    public Image previewImage = null;
+    public boolean shouldShowPreview = true;
 
     public MainWindowController() {
-        view.exportItem.setDisable(true);
-        view.closeItem.setDisable(true);
-        view.saveItem.setDisable(true);
-        view.saveAsItem.setDisable(true);
-
-        if (FGen.get().loadedConfiguration == null || FGen.get().loadedConfiguration.generators.size() == 0) {
-            reload(null);
-        }
-
-        if (FGen.get().saveFilepath != null) {
-            Application.get().getCurrentStage().setTitle("FGen - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
-        }
-
         loadModel();
-
+        updateView();
         setupEvents();
-
-        service.start();
     }
 
     public void setupEvents() {
-        view.newItem.setOnAction(event -> {
-            clearAll();
-            createGenerator();
-        });
-        view.openItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Open Configuration Files");
-                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Configuration Files (*.json)", "*.json");
-                fileChooser.getExtensionFilters().add(extFilter);
-                File file = fileChooser.showOpenDialog(Application.get().getCurrentStage());
+        setupMenuEvents();
+        setupGeneratorsTabEvents();
+        setupStageEvents();
+    }
 
-                if (file != null) {
-                    clearAll();
-                    FGen.get().load(file.getAbsolutePath(), true);
-                    Application.get().getCurrentStage().setTitle("FGen - " + file.getAbsolutePath());
-                    loadModel();
-                    reload(getLastGenerator());
-                }
+    public void setupMenuEvents() {
+        view.newItem.setOnAction(event -> {
+            clearGenerators();
+            addGenerator();
+            updateView();
+        });
+
+        view.openItem.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Configuration Files");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Configuration Files (*.json)", "*.json");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File file = fileChooser.showOpenDialog(Application.get().getCurrentStage());
+
+            if (file != null) {
+                clearGenerators();
+                FGen.get().load(file.getAbsolutePath(), true);
+                loadModel();
+                updateView();
             }
         });
-        view.saveItem.setOnAction(e -> saveAction());
-        view.saveAsItem.setOnAction(e -> saveAsAction());
+
+        view.saveItem.setOnAction(e -> menuSaveAction());
+
+        view.saveAsItem.setOnAction(e -> menuSaveAsAction());
+
         view.exportItem.setOnAction(e -> {
+            // TODO: Width, Height, Exporting popup
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Export Configuration Files");
             File file = directoryChooser.showDialog(Application.get().getCurrentStage());
@@ -137,43 +127,78 @@ public class MainWindowController {
                     if (generator instanceof JpegGenerator) {
                         ((JpegGenerator)generator).path = file.getAbsolutePath() + "/" + ((JpegGenerator)generator).path;
                     } else {
-                        ((PngGenerator)generator).path = file.getAbsolutePath() + "/" + ((PngGenerator)generator).path;;
+                        ((PngGenerator)generator).path = file.getAbsolutePath() + "/" + ((PngGenerator)generator).path;
                     }
+
                     generator.generate();
                 }
             }
         });
+
         view.closeItem.setOnAction(event -> {
-            clearAll();
-            view.exportItem.setDisable(true);
-            view.closeItem.setDisable(true);
-            view.saveItem.setDisable(true);
-            view.saveAsItem.setDisable(true);
+            clearGenerators();
+            updateView();
         });
+
         view.quitItem.setOnAction(event -> Application.get().close());
 
         view.changePreviewItem.setOnAction(event -> {
-            showPreview = view.changePreviewItem.isSelected();
-            view.reloadPreviewTitle((int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight(), showPreview);
-            view.fractalPreviewImageView.setImage(null);
-            view.reloadPreview(getLastGenerator(), showPreview);
-            service.sendUpdate();
+            shouldShowPreview = view.changePreviewItem.isSelected();
+            updateView();
         });
 
         view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 250)));
+    }
 
-        view.generatorPlusButton.setOnMouseClicked(event -> createGenerator());
+    private void menuSaveAction() {
+        if (FGen.get().saveFilepath == null) {
+            menuSaveAsAction();
+            return;
+        }
 
-        view.generatorsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> reload((SingleImageGenerator)newValue));
+        Configuration configuration = new Configuration();
+        configuration.generators.addAll(view.generatorsList.getItems());
+        Json.serialize(FGen.get().saveFilepath, configuration);
+    }
+
+    private void menuSaveAsAction() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Configuration File");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Configuration Files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(Application.get().getCurrentStage());
+
+        if (file != null) {
+            FGen.get().saveFilepath = file.getAbsolutePath();
+            Application.get().getCurrentStage().setTitle("FGen - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
+            menuSaveAction();
+        }
+    }
+
+    public void setupGeneratorsTabEvents() {
+        view.generatorPlusButton.setOnMouseClicked(event -> {
+            addGenerator();
+            updateView();
+        });
+
+        view.generatorsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            updateView();
+        });
+
         view.generatorsList.setCellFactory(listView -> {
             GeneratorListCell cell = new GeneratorListCell();
-            cell.setOnEdited(event ->  reload(cell.getItem()));
+            cell.setOnEdited(event ->  {
+                updateView();
+            });
 
             ContextMenu contextMenu = new ContextMenu();
             cell.setContextMenu(contextMenu);
 
             MenuItem addItem = new MenuItem("Add Generator");
-            addItem.setOnAction(event -> createGenerator());
+            addItem.setOnAction(event -> {
+                addGenerator();
+                updateView();
+            });
             contextMenu.getItems().add(addItem);
 
             cell.itemProperty().addListener((observable, oldValue, newValue) -> {
@@ -182,16 +207,16 @@ public class MainWindowController {
 
                     MenuItem renameItem = new MenuItem("Rename");
                     renameItem.setOnAction(event -> cell.startEdit());
+
                     MenuItem deleteItem = new MenuItem("Delete");
                     deleteItem.setOnAction(event -> {
                         listView.getItems().remove(cell.getItem());
+
                         if (listView.getItems().size() == 0) {
-                            view.exportItem.setDisable(true);
-                            view.closeItem.setDisable(true);
-                            view.saveItem.setDisable(true);
-                            view.saveAsItem.setDisable(true);
+                            updateView();
                         }
                     });
+
                     contextMenu.getItems().clear();
                     contextMenu.getItems().addAll(renameItem, deleteItem);
                 } else {
@@ -204,29 +229,573 @@ public class MainWindowController {
 
             return cell;
         });
+    }
+
+    public void setupStageEvents() {
+        final ChangeListener<Number> listener = new ChangeListener<Number>()
+        {
+            final Timer timer = new Timer();
+            TimerTask task = null;
+            final long delayTime = 200;
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, final Number newValue)
+            {
+                updateTitle();
+
+                if (task != null) {
+                    task.cancel();
+                }
+
+                task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> previewService.update());
+                    }
+                };
+
+                timer.schedule(task, delayTime);
+            }
+        };
 
         Application.get().getCurrentStage().widthProperty().addListener(listener);
         Application.get().getCurrentStage().heightProperty().addListener(listener);
     }
 
-    private void clearAll() {
-        view.generatorsList.getItems().clear();
-        Application.get().getCurrentStage().setTitle("FGen");
-        reload(null);
+    public void updateView() {
+        updateTitle();
+        updateMenu();
+        updateProperties();
+        updatePreview(false);
     }
 
-    private void createGenerator() {
-        Configuration configuration = Json.deserializeFromResources("/presets/gui_new.json", Configuration.class);
-        assert configuration != null;
-        ((JpegGenerator)configuration.generators.get(0)).path = ((JpegGenerator)configuration.generators.get(0)).path.replace("$", String.valueOf(view.generatorsList.getItems().size()));
-        view.generatorsList.getItems().add((SingleImageGenerator)configuration.generators.get(0));
-        view.generatorsList.getSelectionModel().select(view.generatorsList.getItems().size() - 1);
-        reload(getLastGenerator());
-        service.sendUpdate();
-        view.exportItem.setDisable(false);
-        view.closeItem.setDisable(false);
-        view.saveItem.setDisable(false);
-        view.saveAsItem.setDisable(false);
+    public void updateTitle() {
+        if (FGen.get().saveFilepath != null) {
+            Application.get().getCurrentStage().setTitle("FGen - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
+        } else {
+            Application.get().getCurrentStage().setTitle("FGen");
+        }
+    }
+
+    public void updateMenu() {
+        boolean disabled = view.generatorsList.getItems().size() == 0;
+        view.exportItem.setDisable(disabled);
+        view.closeItem.setDisable(disabled);
+        view.saveItem.setDisable(disabled);
+        view.saveAsItem.setDisable(disabled);
+    }
+
+    public void updateProperties() {
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(8, 10, 10, 10));
+
+        if (getSelectedGenerator() == null) {
+            vBox.setStyle("-fx-border-width: 0 1 1 0; -fx-border-color: #C8C8C8;");
+            Label title = new Label("No Generator Selected");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            title.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(title);
+            vBox.setAlignment(Pos.CENTER);
+            view.propertiesTab.setContent(vBox);
+            return;
+        }
+
+        {
+            Label title = new Label("Generator");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<MainWindow.GeneratorTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(MainWindow.GeneratorTypes.values()));
+            comboBox.setValue(MainWindow.GeneratorTypes.JPEG);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            String path;
+
+            if (getSelectedGenerator() instanceof JpegGenerator) {
+                path = ((JpegGenerator)getSelectedGenerator()).path;
+            } else {
+                path = ((PngGenerator)getSelectedGenerator()).path;
+            }
+
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Path");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField(path);
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Width");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("256");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Height");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("256");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Offset (X)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Offset (Y)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Anti-Aliasing");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<MainWindow.AliasingTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(MainWindow.AliasingTypes.values()));
+            comboBox.setValue(MainWindow.AliasingTypes.X1);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Fractal");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<MainWindow.FractalTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(MainWindow.FractalTypes.values()));
+            comboBox.setValue(MainWindow.FractalTypes.JULIA);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        if (getSelectedGenerator().calculationHandler.fractal instanceof JuliaSet) {
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Complex (Real)");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField("-0.7269");
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Complex (Imaginary)");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField("0.1889");
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+        }
+
+        {
+            Label title = new Label("Complex Plane");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Start (Real)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("-1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Start (Imaginary)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("End  (Real)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("End (Imaginary)");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("-1.0");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Step");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("0.001");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Calculation Handler");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<MainWindow.CalculationHandlerTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(MainWindow.CalculationHandlerTypes.values()));
+            comboBox.setValue(MainWindow.CalculationHandlerTypes.SIMPLE);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Max Iterations");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("1000");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Radius");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            TextField textField = new TextField("2");
+            HBox.setHgrow(textField, Priority.ALWAYS);
+            textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+            hBox.getChildren().add(textField);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        if (getSelectedGenerator().calculationHandler instanceof PoolCalculationHandler) {
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Parallelism Level");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField(String.valueOf(Runtime.getRuntime().availableProcessors()));
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+
+            {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(0, 0, 8, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+
+                Label label = new Label("Parallelism Threshold");
+                label.setMinWidth(130);
+                label.setPadding(new Insets(0, 10, 0, 0));
+                hBox.getChildren().add(label);
+
+                TextField textField = new TextField(String.valueOf(PoolCalculationHandler.DEFAULT_PARALLELISM_THRESHOLD));
+                HBox.setHgrow(textField, Priority.ALWAYS);
+                textField.setTextFormatter(new TextFormatter<String>(TextFieldUtil.intFilter));
+                hBox.getChildren().add(textField);
+
+                vBox.getChildren().add(hBox);
+            }
+        }
+
+        {
+            Label title = new Label("Image Handler");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<MainWindow.ImageHandlerTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(MainWindow.ImageHandlerTypes.values()));
+            comboBox.setValue(MainWindow.ImageHandlerTypes.SIMPLE);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        {
+            Label title = new Label("Color Handler");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            vBox.getChildren().add(title);
+        }
+
+        {
+            HBox hBox = new HBox();
+            hBox.setPadding(new Insets(0, 0, 8, 0));
+            hBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Type");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            hBox.getChildren().add(label);
+
+            ComboBox<MainWindow.ColorHandlerTypes> comboBox = new ComboBox<>(FXCollections.observableArrayList(MainWindow.ColorHandlerTypes.values()));
+            comboBox.setValue(MainWindow.ColorHandlerTypes.BASIC);
+            HBox.setHgrow(comboBox, Priority.ALWAYS);
+            comboBox.setMaxWidth(Double.MAX_VALUE);
+            hBox.getChildren().add(comboBox);
+
+            vBox.getChildren().add(hBox);
+        }
+
+        view.scrollPane.setContent(vBox);
+        view.propertiesTab.setContent(view.scrollPane);
+    }
+
+    public void updatePreview(boolean calledFromService) {
+        if (!calledFromService) {
+            previewService.update();
+        }
+
+        updatePreviewTab();
+        updatePreviewText();
+    }
+
+    public void updatePreviewTab() {
+        if (!shouldShowPreview || previewImage == null) {
+            VBox vBox = new VBox();
+            vBox.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #C8C8C8;");
+            vBox.setPadding(new Insets(8, 10, 10, 10));
+            Label title = new Label("No Preview Available");
+            title.setPadding(new Insets(0, 0, 8, 0));
+            title.setStyle("-fx-font-weight: bold");
+            title.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(title);
+            vBox.setAlignment(Pos.CENTER);
+            view.previewTab.setContent(vBox);
+            return;
+        }
+
+        view.fractalPreviewImageView.setImage(previewImage);
+        view.previewTab.setContent(view.fractalPreviewImageView);
+    }
+
+    public void updatePreviewText() {
+        if (previewService.isWorking) {
+            view.statusLabel.setText("Generating...");
+        } else if (shouldShowPreview) {
+            view.statusLabel.setText("Ready.");
+        } else {
+            view.statusLabel.setText("Paused.");
+        }
     }
 
     private void loadModel() {
@@ -236,77 +805,23 @@ public class MainWindowController {
 
         if (view.generatorsList.getItems().size() > 0) {
             view.generatorsList.getSelectionModel().select(0);
-            view.exportItem.setDisable(false);
-            view.closeItem.setDisable(false);
-            view.saveItem.setDisable(false);
-            view.saveAsItem.setDisable(false);
         }
     }
 
-    private void reload(SingleImageGenerator generator) {
-        view.reloadProperties(generator, showPreview);
-        view.reloadPreview(generator, showPreview);
+    private void addGenerator() {
+        Configuration configuration = Json.deserializeFromResources("/presets/gui_new.json", Configuration.class);
+        assert configuration != null;
+        ((JpegGenerator)configuration.generators.get(0)).path = ((JpegGenerator)configuration.generators.get(0)).path.replace("$", String.valueOf(view.generatorsList.getItems().size()));
+        view.generatorsList.getItems().add((SingleImageGenerator)configuration.generators.get(0));
+        view.generatorsList.getSelectionModel().select(view.generatorsList.getItems().size() - 1);
     }
 
-    private SingleImageGenerator getLastGenerator() {
-        if (view.generatorsList.getItems().size() == 0) {
-            return null;
-        }
-
-        return view.generatorsList.getItems().get(view.generatorsList.getItems().size() - 1);
+    private void clearGenerators() {
+        view.generatorsList.getItems().clear();
+        previewImage = null;
     }
 
-    private void saveAction() {
-        if (FGen.get().saveFilepath == null) {
-            saveAsAction();
-            return;
-        }
-
-        Configuration configuration = new Configuration();
-        configuration.generators.addAll(view.generatorsList.getItems());
-        Json.serialize(FGen.get().saveFilepath, configuration);
+    public SingleImageGenerator getSelectedGenerator() {
+        return view.generatorsList.getSelectionModel().getSelectedItem();
     }
-
-    private void saveAsAction() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Configuration File");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Configuration Files (*.json)", "*.json");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(Application.get().getCurrentStage());
-
-        if (file != null) {
-            FGen.get().saveFilepath = file.getAbsolutePath();
-            Application.get().getCurrentStage().setTitle("FGen - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
-            saveAction();
-        }
-    }
-
-    final ChangeListener<Number> listener = new ChangeListener<Number>()
-    {
-        final Timer timer = new Timer(); // uses a timer to call your resize method
-        TimerTask task = null; // task to execute after defined delay
-        final long delayTime = 200; // delay that has to pass in order to consider an operation done
-
-        @Override
-        public void changed(ObservableValue<? extends Number> observable, Number oldValue, final Number newValue)
-        {
-            view.reloadPreviewTitle((int) view.previewTabPane.getWidth(), (int) view.previewTabPane.getHeight(), showPreview);
-
-            if (task != null)
-            { // there was already a task scheduled from the previous operation ...
-                task.cancel(); // cancel it, we have a new size to consider
-            }
-
-            task = new TimerTask() // create new task that calls your resize operation
-            {
-                @Override
-                public void run()
-                {
-                    Platform.runLater(() -> service.sendUpdate());
-                }
-            };
-            // schedule new task
-            timer.schedule(task, delayTime);
-        }
-    };
 }
