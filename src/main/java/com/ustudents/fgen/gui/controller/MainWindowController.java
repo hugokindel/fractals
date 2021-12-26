@@ -2,6 +2,7 @@ package com.ustudents.fgen.gui.controller;
 
 import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.Json;
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.format.Configuration;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.generators.JpegGenerator;
@@ -11,20 +12,70 @@ import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.controls.GeneratorListCell;
 import com.ustudents.fgen.gui.views.AboutWindow;
 import com.ustudents.fgen.gui.views.MainWindow;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
+import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
 
 public class MainWindowController {
+    public class PreviewUpdator extends Service<Void> {
+        @Override
+        protected Task<Void> createTask() {
+            return new Task<>() {
+                @Override
+                protected Void call() {
+                    update();
+
+                    return null;
+                }
+            };
+        }
+
+        public synchronized void update() {
+            if (showPreview && view.generatorsList.getSelectionModel().getSelectedItem() != null) {
+                Platform.runLater(() -> view.statusLabel.setText("Generating..."));
+
+                view.generatorsList.getSelectionModel().getSelectedItem().width = (int)view.previewTabPane.getWidth();
+                view.generatorsList.getSelectionModel().getSelectedItem().height = (int)view.previewTabPane.getHeight();
+                view.generatorsList.getSelectionModel().getSelectedItem().generate();
+
+                Platform.runLater(() -> {
+                    view.fractalPreviewImage = SwingFXUtils.toFXImage(view.generatorsList.getSelectionModel().getSelectedItem().bufferedImage, null);
+                    view.fractalPreviewImageView.setImage(view.fractalPreviewImage);
+                    view.reloadPreview(view.generatorsList.getSelectionModel().getSelectedItem(), showPreview);
+                    view.statusLabel.setText("Ready.");
+                });
+            }
+        }
+
+        public synchronized void sendUpdate() {
+            if (service.getState() == State.RUNNING) {
+                cancel();
+            }
+
+            reset();
+            start();
+        }
+    }
+
     public MainWindow view = new MainWindow(1280, 720);
 
     public boolean showPreview = true;
+
+    public PreviewUpdator service = new PreviewUpdator();
 
     public MainWindowController() {
         view.exportItem.setDisable(true);
@@ -43,6 +94,8 @@ public class MainWindowController {
         loadModel();
 
         setupEvents();
+
+        service.start();
     }
 
     public void setupEvents() {
@@ -98,7 +151,9 @@ public class MainWindowController {
         view.changePreviewItem.setOnAction(event -> {
             showPreview = view.changePreviewItem.isSelected();
             view.reloadPreviewTitle((int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight(), showPreview);
+            view.fractalPreviewImageView.setImage(null);
             view.reloadPreview(getLastGenerator(), showPreview);
+            service.sendUpdate();
         });
 
         view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 250)));
@@ -108,7 +163,7 @@ public class MainWindowController {
         view.generatorsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> reload((SingleImageGenerator)newValue));
         view.generatorsList.setCellFactory(listView -> {
             GeneratorListCell cell = new GeneratorListCell();
-            cell.setOnEdited(event ->  reload((SingleImageGenerator)cell.getItem()));
+            cell.setOnEdited(event ->  reload(cell.getItem()));
 
             ContextMenu contextMenu = new ContextMenu();
             cell.setContextMenu(contextMenu);
@@ -160,7 +215,7 @@ public class MainWindowController {
         Configuration configuration = Json.deserializeFromResources("/presets/gui_new.json", Configuration.class);
         assert configuration != null;
         ((JpegGenerator)configuration.generators.get(0)).path = ((JpegGenerator)configuration.generators.get(0)).path.replace("$", String.valueOf(view.generatorsList.getItems().size()));
-        view.generatorsList.getItems().add(configuration.generators.get(0));
+        view.generatorsList.getItems().add((SingleImageGenerator)configuration.generators.get(0));
         view.generatorsList.getSelectionModel().select(view.generatorsList.getItems().size() - 1);
         reload(getLastGenerator());
         view.exportItem.setDisable(false);
@@ -171,7 +226,7 @@ public class MainWindowController {
 
     private void loadModel() {
         for (int i = 0; i < FGen.get().loadedConfiguration.generators.size(); i++) {
-            view.generatorsList.getItems().add(FGen.get().loadedConfiguration.generators.get(i));
+            view.generatorsList.getItems().add((SingleImageGenerator)FGen.get().loadedConfiguration.generators.get(i));
         }
 
         if (view.generatorsList.getItems().size() > 0) {
@@ -193,7 +248,7 @@ public class MainWindowController {
             return null;
         }
 
-        return (SingleImageGenerator)view.generatorsList.getItems().get(view.generatorsList.getItems().size() - 1);
+        return view.generatorsList.getItems().get(view.generatorsList.getItems().size() - 1);
     }
 
     private void saveAction() {

@@ -139,13 +139,13 @@ public class MainWindow extends Window {
     public VBox generatorBox = new VBox();
     public ToolBar generatorToolbar = new ToolBar();
     public Button generatorPlusButton = new Button("Add Generator");
-    public ListView<Generator> generatorsList = new ListView<>();
+    public ListView<SingleImageGenerator> generatorsList = new ListView<>();
     public TabPane parametersTabPane = new TabPane();
     public Tab propertiesTab = new Tab("Properties");
     public TabPane previewTabPane = new TabPane();
     public Tab previewTab = new Tab("Fractal Preview");
     public Image fractalPreviewImage = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
-    public ImageView fractalPreviewImageView = new ImageView(fractalPreviewImage);
+    public ImageView fractalPreviewImageView = new ImageView();
     public ToolBar toolbar = new ToolBar();
     public Label statusLabel = new Label("Ready.");
 
@@ -735,7 +735,7 @@ public class MainWindow extends Window {
     }
 
     public void reloadPreview(SingleImageGenerator generator, boolean showPreview) {
-        if (!showPreview || generator == null) {
+        if (!showPreview || generator == null || fractalPreviewImageView.getImage() == null) {
             VBox vBox = new VBox();
             vBox.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #C8C8C8;");
             vBox.setPadding(new Insets(8, 10, 10, 10));

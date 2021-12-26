@@ -2,6 +2,7 @@ package com.ustudents.fgen.gui.controls;
 
 import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.generators.Generator;
+import com.ustudents.fgen.generators.SingleImageGenerator;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -13,7 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 // Implementation in part from: https://stackoverflow.com/questions/36436358/javafx-listview-edit-textfieldlistcell
-public class GeneratorListCell extends ListCell<Generator> {
+public class GeneratorListCell extends ListCell<SingleImageGenerator> {
     private final TextField textField = new TextField();
 
     private EventHandler<Event> onEdited = null;
@@ -38,7 +39,7 @@ public class GeneratorListCell extends ListCell<Generator> {
     }
 
     @Override
-    protected void updateItem(Generator generator, boolean empty) {
+    protected void updateItem(SingleImageGenerator generator, boolean empty) {
         super.updateItem(generator, empty);
 
         if (isEditing()) {

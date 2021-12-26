@@ -1,6 +1,7 @@
 package com.ustudents.fgen.handlers.image;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.format.AliasingType;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
@@ -20,8 +21,8 @@ public class SimpleImageHandler extends ImageHandler {
     public BufferedImage fillImage(int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType) {
         BufferedImage bufferedImage = createImage(divergenceIndexes, aliasingType);
 
-        for (int y = 0 ; y < bufferedImage.getWidth(); y++) {
-            for (int x = 0; x < bufferedImage.getHeight(); x++) {
+        for (int y = 0 ; y < bufferedImage.getHeight(); y++) {
+            for (int x = 0; x < bufferedImage.getWidth(); x++) {
                 computeColorOfIndex(bufferedImage, x, y, divergenceIndexes, maxIterations, aliasingType);
             }
         }

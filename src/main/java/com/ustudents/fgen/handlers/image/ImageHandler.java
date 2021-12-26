@@ -43,7 +43,7 @@ public abstract class ImageHandler {
 
     protected BufferedImage createImage(int[][] divergenceIndexes, AliasingType aliasingType) {
         int n = aliasingType.getMultiplier();
-        return new BufferedImage(divergenceIndexes.length / n, divergenceIndexes[0].length / n, BufferedImage.TYPE_INT_RGB);
+        return new BufferedImage(divergenceIndexes[0].length / n, divergenceIndexes.length / n, BufferedImage.TYPE_INT_RGB);
     }
 
     protected void computeColorOfIndex(BufferedImage bufferedImage, int x, int y, int[][] divergenceIndexes, int maxIterations, AliasingType aliasingType) {

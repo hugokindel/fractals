@@ -37,6 +37,7 @@ dependencies {
     val javaFxVersion: String by project
 
     implementation("org.openjfx:javafx-base:$javaFxVersion:$platform")
+    implementation("org.openjfx:javafx-swing:$javaFxVersion:$platform")
     implementation("org.openjfx:javafx-controls:$javaFxVersion:$platform")
     implementation("org.openjfx:javafx-graphics:$javaFxVersion:$platform")
     implementation("org.openjfx:javafx-fxml:$javaFxVersion:$platform")
