@@ -2,7 +2,7 @@
 	"version": 1,
 	"generators": [
 		{
-			"name": "Aliasing X1",
+			"name": "Anti-Aliasing X1",
 			"class": "PngGenerator",
 			"path": "x1.png",
 			"aliasingType": "X1",
@@ -41,7 +41,7 @@
 			"offsetY": 0.0
 		},
 		{
-			"name": "Aliasing X2",
+			"name": "Anti-Aliasing X2",
 			"class": "PngGenerator",
 			"path": "x2.png",
 			"aliasingType": "X2",
@@ -80,7 +80,7 @@
 			"offsetY": 0.0
 		},
 		{
-			"name": "Aliasing X4",
+			"name": "Anti-Aliasing X4",
 			"class": "PngGenerator",
 			"path": "x4.png",
 			"aliasingType": "X4",
@@ -119,7 +119,7 @@
 			"offsetY": 0.0
 		},
 		{
-			"name": "Aliasing X8",
+			"name": "Anti-Aliasing X8",
 			"class": "PngGenerator",
 			"path": "x8.png",
 			"aliasingType": "X8",
@@ -158,7 +158,7 @@
 			"offsetY": 0.0
 		},
 		{
-			"name": "Aliasing X16",
+			"name": "Anti-Aliasing X16",
 			"class": "PngGenerator",
 			"path": "x16.png",
 			"aliasingType": "X16",
