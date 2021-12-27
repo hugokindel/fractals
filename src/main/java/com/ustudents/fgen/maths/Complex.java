@@ -43,8 +43,8 @@ public class Complex implements Cloneable {
 
     public Complex multiply(double factor) {
         return new Complex(
-                real * factor - imaginary * factor,
-                real * factor + imaginary * factor);
+                real * factor,
+                imaginary * factor);
     }
 
     /* From Apache. */

@@ -21,14 +21,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -836,7 +833,7 @@ public class MainWindowController {
     }
 
     private void addGenerator() {
-        Configuration configuration = Json.deserializeFromResources("/presets/gui_new.json", Configuration.class);
+        Configuration configuration = Json.deserializeFromResources("/presets/gui/gui_new.json", Configuration.class);
         assert configuration != null;
         ((JpegGenerator)configuration.generators.get(0)).path = ((JpegGenerator)configuration.generators.get(0)).path.replace("$", String.valueOf(view.generatorsList.getItems().size()));
         view.generatorsList.getItems().add((SingleImageGenerator)configuration.generators.get(0));

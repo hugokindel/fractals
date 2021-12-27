@@ -10,7 +10,6 @@ import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.gui.Application;
 
 import java.time.Duration;
-import java.util.Objects;
 
 @Command(name = "fgen", version = "1.0.0", description =
         "A tool to generate fractals based on various sets of parameters.\n" +
