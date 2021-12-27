@@ -15,6 +15,14 @@ import java.util.function.Function;
 public class PoolCalculationHandler extends CalculationHandler {
     public static final int DEFAULT_PARALLELISM_THRESHOLD = 16192;
 
+    public Integer getParallelismLevel() {
+        return parallelismLevel;
+    }
+
+    public Integer getParallelismThreshold() {
+        return parallelismThreshold;
+    }
+
     private class CalculationTask extends RecursiveAction {
         int startIndex;
         int endIndex;
@@ -66,10 +74,10 @@ public class PoolCalculationHandler extends CalculationHandler {
     }
 
     @JsonSerializable(necessary = false)
-    public Integer parallelismLevel = Runtime.getRuntime().availableProcessors();
+    private Integer parallelismLevel = Runtime.getRuntime().availableProcessors();
 
     @JsonSerializable(necessary = false)
-    public Integer parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
+    private Integer parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
 
     public PoolCalculationHandler() {
 
@@ -97,5 +105,21 @@ public class PoolCalculationHandler extends CalculationHandler {
         CalculationTask work = new CalculationTask(0, width * height, width, height, originX, originY, offsetX, offsetY, divergenceIndexes);
         Pool.get(parallelismLevel).invoke(work);
         return divergenceIndexes;
+    }
+
+    public void setParallelismLevel(Integer parallelismLevel) {
+        if (parallelismLevel == 0 || parallelismLevel > Runtime.getRuntime().availableProcessors()) {
+            this.parallelismLevel = Runtime.getRuntime().availableProcessors();
+        } else {
+            this.parallelismLevel = parallelismLevel;
+        }
+    }
+
+    public void setParallelismThreshold(Integer parallelismThreshold) {
+        if (parallelismThreshold < DEFAULT_PARALLELISM_THRESHOLD) {
+            this.parallelismThreshold = DEFAULT_PARALLELISM_THRESHOLD;
+        } else {
+            this.parallelismThreshold = parallelismThreshold;
+        }
     }
 }

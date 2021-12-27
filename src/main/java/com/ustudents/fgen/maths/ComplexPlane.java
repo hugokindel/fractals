@@ -6,13 +6,13 @@ import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 @JsonSerializable
 public class ComplexPlane {
     @JsonSerializable
-    private Complex start = null;
+    public Complex start = null;
 
     @JsonSerializable
-    private Complex end = null;
+    public Complex end = null;
 
     @JsonSerializable
-    private Double step = 0.;
+    public Double step = 0.;
 
     private int viewWidth;
 

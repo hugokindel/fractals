@@ -9,7 +9,7 @@ import java.util.function.Function;
 @JsonSerializable(serializeClassName = true)
 public class JuliaSet extends Fractal {
     @JsonSerializable
-    private final Complex c;
+    public Complex c;
 
     public JuliaSet() {
         c = new Complex();

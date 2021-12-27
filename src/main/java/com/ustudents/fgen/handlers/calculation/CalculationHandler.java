@@ -25,13 +25,13 @@ public abstract class CalculationHandler {
     public Integer maxIterations = 1000;
 
     @JsonSerializable(necessary = false)
-    public Integer radius = 2;
+    public Double radius = 2.;
 
     public CalculationHandler() {
 
     }
 
-    public CalculationHandler(Fractal fractal, ComplexPlane plane, int maxIterations, int radius) {
+    public CalculationHandler(Fractal fractal, ComplexPlane plane, int maxIterations, double radius) {
         this.fractal = fractal;
         this.plane = plane;
         this.maxIterations = maxIterations;
