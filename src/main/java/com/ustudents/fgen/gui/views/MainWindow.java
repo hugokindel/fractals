@@ -4,7 +4,6 @@ import com.ustudents.fgen.common.utils.TextFieldUtil;
 import com.ustudents.fgen.generators.SingleImageGenerator;
 import com.ustudents.fgen.gui.Window;
 import com.ustudents.fgen.gui.views.types.*;
-import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

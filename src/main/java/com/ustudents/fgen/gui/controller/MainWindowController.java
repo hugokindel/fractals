@@ -11,6 +11,7 @@ import com.ustudents.fgen.generators.SingleImageGenerator;
 import com.ustudents.fgen.gui.Application;
 import com.ustudents.fgen.gui.controls.GeneratorListCell;
 import com.ustudents.fgen.gui.views.AboutWindow;
+import com.ustudents.fgen.gui.views.ExportingWindow;
 import com.ustudents.fgen.gui.views.MainWindow;
 import com.ustudents.fgen.gui.views.types.*;
 import com.ustudents.fgen.handlers.calculation.PoolCalculationHandler;
@@ -20,10 +21,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -39,30 +44,31 @@ public class MainWindowController {
             return new Task<>() {
                 @Override
                 protected Void call() {
-                    logic();
+                    isWorking = true;
+                    Platform.runLater(() -> updatePreview(true));
+
+                    SingleImageGenerator generator = new SingleImageGenerator();
+                    generator.name = view.generatorsList.getSelectionModel().getSelectedItem().name;
+                    generator.width = (int)view.previewTabPane.getWidth();
+                    generator.height = (int)view.previewTabPane.getHeight();
+                    generator.offsetX = view.generatorsList.getSelectionModel().getSelectedItem().offsetX;
+                    generator.offsetY = view.generatorsList.getSelectionModel().getSelectedItem().offsetY;
+                    generator.calculationHandler = view.generatorsList.getSelectionModel().getSelectedItem().calculationHandler;
+                    generator.aliasingType = view.generatorsList.getSelectionModel().getSelectedItem().aliasingType;
+                    generator.imageHandler = view.generatorsList.getSelectionModel().getSelectedItem().imageHandler;
+                    generator.generate();
+
+                    if (isCancelled()) {
+                        return null;
+                    }
+
+                    previewImage = SwingFXUtils.toFXImage(generator.bufferedImage, null);
+                    isWorking = false;
+                    Platform.runLater(() -> updatePreview(true));
+
                     return null;
                 }
             };
-        }
-
-        public void logic() {
-            isWorking = true;
-            Platform.runLater(() -> updatePreview(true));
-
-            SingleImageGenerator generator = new SingleImageGenerator();
-            generator.name = view.generatorsList.getSelectionModel().getSelectedItem().name;
-            generator.width = (int)view.previewTabPane.getWidth();
-            generator.height = (int)view.previewTabPane.getHeight();
-            generator.offsetX = view.generatorsList.getSelectionModel().getSelectedItem().offsetX;
-            generator.offsetY = view.generatorsList.getSelectionModel().getSelectedItem().offsetY;
-            generator.calculationHandler = view.generatorsList.getSelectionModel().getSelectedItem().calculationHandler;
-            generator.aliasingType = view.generatorsList.getSelectionModel().getSelectedItem().aliasingType;
-            generator.imageHandler = view.generatorsList.getSelectionModel().getSelectedItem().imageHandler;
-            generator.generate();
-
-            previewImage = SwingFXUtils.toFXImage(generator.bufferedImage, null);
-            isWorking = false;
-            Platform.runLater(() -> updatePreview(true));
         }
 
         public void update() {
@@ -156,15 +162,58 @@ public class MainWindowController {
             File file = directoryChooser.showDialog(Application.get().getCurrentStage());
 
             if (file != null) {
-                for (Generator generator : view.generatorsList.getItems()) {
-                    if (generator instanceof JpegGenerator) {
-                        ((JpegGenerator)generator).path = file.getAbsolutePath() + "/" + ((JpegGenerator)generator).path;
-                    } else {
-                        ((PngGenerator)generator).path = file.getAbsolutePath() + "/" + ((PngGenerator)generator).path;
-                    }
+                ExportingWindow window = new ExportingWindow(256, 128);
+                Stage exportWindow = Application.get().showPopup(window, "Task in progress...");
 
-                    generator.generate();
-                }
+                Service<Void> exportService = new Service<Void>() {
+                    @Override
+                    protected Task<Void> createTask() {
+                        return new Task<>() {
+                            @Override
+                            protected Void call() {
+                                for (Generator generator : view.generatorsList.getItems()) {
+                                    if (isCancelled()) {
+                                        return null;
+                                    }
+
+                                    String oldPath;
+
+                                    if (generator instanceof JpegGenerator) {
+                                        oldPath = ((JpegGenerator)generator).path;
+                                        ((JpegGenerator)generator).path = file.getAbsolutePath() + "/" + ((JpegGenerator)generator).path;
+                                    } else {
+                                        oldPath = ((PngGenerator)generator).path;
+                                        ((PngGenerator)generator).path = file.getAbsolutePath() + "/" + ((PngGenerator)generator).path;
+                                    }
+
+                                    generator.generate();
+
+                                    if (generator instanceof JpegGenerator) {
+                                        ((JpegGenerator)generator).path = oldPath;
+                                    } else {
+                                        ((PngGenerator)generator).path = oldPath;
+                                    }
+                                }
+
+                                Platform.runLater(exportWindow::close);
+
+                                return null;
+                            }
+                        };
+                    }
+                };
+
+                exportWindow.setOnCloseRequest(event -> {
+                    exportService.cancel();
+                    exportWindow.close();
+                });
+
+                window.cancelButton.setOnAction(event -> {
+                    exportService.cancel();
+                    exportWindow.close();
+                });
+
+                exportService.start();
             }
         });
 
@@ -180,7 +229,7 @@ public class MainWindowController {
             updateView();
         });
 
-        view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 250)));
+        view.aboutItem.setOnAction(event -> Application.get().showPopup(new AboutWindow(400, 250), "About FGen (Fractal Generator)"));
     }
 
     private void menuSaveAction() {
@@ -203,7 +252,7 @@ public class MainWindowController {
 
         if (file != null) {
             FGen.get().saveFilepath = file.getAbsolutePath();
-            Application.get().getCurrentStage().setTitle("FGen - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
+            updateTitle();
             menuSaveAction();
         }
     }
@@ -630,9 +679,9 @@ public class MainWindowController {
 
     public void updateTitle() {
         if (FGen.get().saveFilepath != null) {
-            Application.get().getCurrentStage().setTitle("FGen - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
+            Application.get().getCurrentStage().setTitle("FGen (Fractal Generator) - " + Paths.get(FGen.get().saveFilepath).toAbsolutePath());
         } else {
-            Application.get().getCurrentStage().setTitle("FGen");
+            Application.get().getCurrentStage().setTitle("FGen (Fractal Generator)");
         }
 
         view.previewTab.setText(String.format("Fractal Preview (%dx%d)", (int)view.previewTabPane.getWidth(), (int)view.previewTabPane.getHeight()));
@@ -657,7 +706,19 @@ public class MainWindowController {
             }
 
             view.propertiesGeneratorType.setValue(AvailableGenerators.fromGenerator(getSelectedGenerator()));
-            view.propertiesGeneratorPath.setText(getSelectedGenerator() instanceof PngGenerator ? ((PngGenerator)getSelectedGenerator()).path : ((JpegGenerator)getSelectedGenerator()).path);
+
+            String path = getSelectedGenerator() instanceof PngGenerator ? ((PngGenerator)getSelectedGenerator()).path : ((JpegGenerator)getSelectedGenerator()).path;
+
+            if (path.endsWith(".jpeg") && getSelectedGenerator() instanceof PngGenerator) {
+                path = path.replace(".jpeg", ".png");
+            } else if (path.endsWith(".jpg") && getSelectedGenerator() instanceof PngGenerator) {
+                path = path.replace(".jpg", ".png");
+            } else if (path.endsWith(".jpg") && getSelectedGenerator() instanceof JpegGenerator) {
+                path = path.replace(".png", ".jpeg");
+            }
+
+            view.propertiesGeneratorPath.setText(path);
+
             view.propertiesGeneratorWidth.setText(String.valueOf(getSelectedGenerator().width));
             view.propertiesGeneratorHeight.setText(String.valueOf(getSelectedGenerator().height));
             if (!view.propertiesGeneratorOffsetX.getText().equals(String.valueOf(getSelectedGenerator().offsetX))) {

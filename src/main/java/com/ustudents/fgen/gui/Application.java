@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.Objects;
 
@@ -44,17 +45,19 @@ public class Application extends javafx.application.Application {
         return currentStage;
     }
 
-    public void showPopup(Scene scene) {
+    public Stage showPopup(Scene scene, String title) {
         final Stage dialog = new Stage();
 
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(Application.get().getCurrentStage());
         dialog.getIcons().add(WINDOW_ICON);
-        dialog.setTitle("About FGen");
+        dialog.setTitle(title);
         dialog.setResizable(false);
         dialog.setScene(scene);
 
         dialog.show();
+
+        return dialog;
     }
 
     public void close() {
