@@ -25,7 +25,7 @@
 						"real": 1.0,
 						"imaginary": -1.0
 					},
-					"step": 0.001
+					"step": 0.003
 				},
 				"maxIterations": 1000,
 				"radius": 2
