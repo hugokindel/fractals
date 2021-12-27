@@ -16,10 +16,4 @@ output/
 **/.idea/
 
 # Fractals
-*.png
-*.jpg
-*.jpeg
-*.gif
 /*.json
-
-!src/main/resources/icon.png

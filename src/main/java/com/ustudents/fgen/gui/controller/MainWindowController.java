@@ -2,6 +2,7 @@ package com.ustudents.fgen.gui.controller;
 
 import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.Json;
+import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.format.Configuration;
 import com.ustudents.fgen.fractals.JuliaSet;
 import com.ustudents.fgen.fractals.PolynomialFunction;
@@ -771,23 +772,23 @@ public class MainWindowController {
 
             view.propertiesGeneratorWidth.setText(String.valueOf(getSelectedGenerator().width));
             view.propertiesGeneratorHeight.setText(String.valueOf(getSelectedGenerator().height));
-            if (!view.propertiesGeneratorOffsetX.getText().equals(String.valueOf(getSelectedGenerator().offsetX))) {
+            if (view.propertiesGeneratorOffsetX.getText().equals("") || !Double.valueOf(view.propertiesGeneratorOffsetX.getText()).equals(getSelectedGenerator().offsetX)) {
                 view.propertiesGeneratorOffsetX.setText(String.valueOf(getSelectedGenerator().offsetX));
             }
-            if (!view.propertiesGeneratorOffsetY.getText().equals(String.valueOf(getSelectedGenerator().offsetY))) {
+            if (view.propertiesGeneratorOffsetY.getText().equals("") || !Double.valueOf(view.propertiesGeneratorOffsetY.getText()).equals(getSelectedGenerator().offsetY)) {
                 view.propertiesGeneratorOffsetY.setText(String.valueOf(getSelectedGenerator().offsetY));
             }
             view.propertiesGeneratorAliasing.setValue(AvailableAliasings.fromAliasingType(getSelectedGenerator().aliasingType));
             view.propertiesFractalType.setValue(AvailableFractals.fromFractal(getSelectedGenerator().calculationHandler.fractal));
 
             if (view.propertiesFractalType.getValue() == AvailableFractals.JULIA) {
-                if (!view.propertiesFractalComplexReal.getText().equals(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real))) {
+                if (view.propertiesFractalComplexReal.getText().equals("") || !Double.valueOf(view.propertiesFractalComplexReal.getText()).equals(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real)) {
                     view.propertiesFractalComplexReal.setText(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real));
                 }
                 if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexRealBox)) {
                     view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 1, view.propertiesFractalComplexRealBox);
                 }
-                if (!view.propertiesFractalComplexImaginary.getText().equals(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary))) {
+                if (view.propertiesFractalComplexImaginary.getText().equals("") || !Double.valueOf(view.propertiesFractalComplexImaginary.getText()).equals(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary)) {
                     view.propertiesFractalComplexImaginary.setText(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary));
                 }
                 if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexImaginaryBox)) {
@@ -796,7 +797,7 @@ public class MainWindowController {
                 view.propertiesBox.getChildren().remove(view.propertiesFractalPolynomialFunctionBox);
                 view.propertiesBox.getChildren().remove(view.propertiesFractalPolynomialFunctionStaticZ0Box);
             } else if (view.propertiesFractalType.getValue() == AvailableFractals.POLYNOMIAL_FUNCTION) {
-                if (!view.propertiesFractalPolynomialFunction.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).f))) {
+                if (view.propertiesFractalPolynomialFunction.getText().equals("") || !view.propertiesFractalPolynomialFunction.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).f))) {
                     view.propertiesFractalPolynomialFunction.setText(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).f);
                 }
                 if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalPolynomialFunctionBox)) {
@@ -809,13 +810,13 @@ public class MainWindowController {
                     view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 2, view.propertiesFractalPolynomialFunctionStaticZ0Box);
                 }
                 if (!view.propertiesFractalPolynomialFunctionStaticZ0.isSelected()) {
-                    if (!view.propertiesFractalComplexReal.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.real))) {
+                    if (view.propertiesFractalComplexReal.getText().equals("") || !Double.valueOf(view.propertiesFractalComplexReal.getText()).equals(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real)) {
                         view.propertiesFractalComplexReal.setText(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.real));
                     }
                     if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexRealBox)) {
                         view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 3, view.propertiesFractalComplexRealBox);
                     }
-                    if (!view.propertiesFractalComplexImaginary.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.imaginary))) {
+                    if (view.propertiesFractalComplexImaginary.getText().equals("") || !Double.valueOf(view.propertiesFractalComplexImaginary.getText()).equals(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary)) {
                         view.propertiesFractalComplexImaginary.setText(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.imaginary));
                     }
                     if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexImaginaryBox)) {
@@ -831,39 +832,38 @@ public class MainWindowController {
                 view.propertiesBox.getChildren().remove(view.propertiesFractalComplexRealBox);
                 view.propertiesBox.getChildren().remove(view.propertiesFractalComplexImaginaryBox);
             }
-
-            if (!view.propertiesPlaneStartReal.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.plane.start.real))) {
+            if (view.propertiesPlaneStartReal.getText().equals("") || !Double.valueOf(view.propertiesPlaneStartReal.getText()).equals(getSelectedGenerator().calculationHandler.plane.start.real)) {
                 view.propertiesPlaneStartReal.setText(String.valueOf(getSelectedGenerator().calculationHandler.plane.start.real));
             }
-            if (!view.propertiesPlaneStartImaginary.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.plane.start.imaginary))) {
+            if (view.propertiesPlaneStartImaginary.getText().equals("") || !Double.valueOf(view.propertiesPlaneStartImaginary.getText()).equals(getSelectedGenerator().calculationHandler.plane.start.imaginary)) {
                 view.propertiesPlaneStartImaginary.setText(String.valueOf(getSelectedGenerator().calculationHandler.plane.start.imaginary));
             }
-            if (!view.propertiesPlaneEndReal.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.plane.end.real))) {
+            if (view.propertiesPlaneEndReal.getText().equals("") || !Double.valueOf(view.propertiesPlaneEndReal.getText()).equals(getSelectedGenerator().calculationHandler.plane.end.real)) {
                 view.propertiesPlaneEndReal.setText(String.valueOf(getSelectedGenerator().calculationHandler.plane.end.real));
             }
-            if (!view.propertiesPlaneEndImaginary.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.plane.end.imaginary))) {
+            if (view.propertiesPlaneEndImaginary.getText().equals("") || !Double.valueOf(view.propertiesPlaneEndImaginary.getText()).equals(getSelectedGenerator().calculationHandler.plane.end.imaginary)) {
                 view.propertiesPlaneEndImaginary.setText(String.valueOf(getSelectedGenerator().calculationHandler.plane.end.imaginary));
             }
-            if (!view.propertiesPlaneStep.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.plane.step))) {
+            if (view.propertiesPlaneStep.getText().equals("") || !Double.valueOf(view.propertiesPlaneStep.getText()).equals(getSelectedGenerator().calculationHandler.plane.step)) {
                 view.propertiesPlaneStep.setText(String.valueOf(getSelectedGenerator().calculationHandler.plane.step));
             }
 
             view.propertiesCalculationHandlerType.setValue(AvailableCalculationHandlers.fromCalculationHandlers(getSelectedGenerator().calculationHandler));
-            if (!view.propertiesCalculationHandlerMaxIterations.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.maxIterations))) {
+            if (view.propertiesCalculationHandlerMaxIterations.getText().equals("") || !Integer.valueOf(view.propertiesCalculationHandlerMaxIterations.getText()).equals(getSelectedGenerator().calculationHandler.maxIterations)) {
                 view.propertiesCalculationHandlerMaxIterations.setText(String.valueOf(getSelectedGenerator().calculationHandler.maxIterations));
             }
-            if (!view.propertiesCalculationHandlerRadius.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.radius))) {
+            if (view.propertiesCalculationHandlerRadius.getText().equals("") || !Double.valueOf(view.propertiesCalculationHandlerRadius.getText()).equals(getSelectedGenerator().calculationHandler.radius)) {
                 view.propertiesCalculationHandlerRadius.setText(String.valueOf(getSelectedGenerator().calculationHandler.radius));
             }
 
             if (view.propertiesCalculationHandlerType.getValue() == AvailableCalculationHandlers.POOL) {
-                if (!view.propertiesParallelismLevel.getText().equals(String.valueOf(((PoolCalculationHandler)getSelectedGenerator().calculationHandler).getParallelismLevel()))) {
+                if (view.propertiesParallelismLevel.getText().equals("") || !Integer.valueOf(view.propertiesParallelismLevel.getText()).equals(((PoolCalculationHandler)getSelectedGenerator().calculationHandler).getParallelismLevel())) {
                     view.propertiesParallelismLevel.setText(String.valueOf(((PoolCalculationHandler)getSelectedGenerator().calculationHandler).getParallelismLevel()));
                 }
                 if  (!view.propertiesBox.getChildren().contains(view.propertiesParallelismLevelBox)) {
                     view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesCalculationHandlerRadiusBox) + 1, view.propertiesParallelismLevelBox);
                 }
-                if (!view.propertiesParallelismThreshold.getText().equals(String.valueOf(((PoolCalculationHandler)getSelectedGenerator().calculationHandler).getParallelismThreshold()))) {
+                if (view.propertiesParallelismThreshold.getText().equals("") || !Integer.valueOf(view.propertiesParallelismThreshold.getText()).equals(((PoolCalculationHandler)getSelectedGenerator().calculationHandler).getParallelismThreshold())) {
                     view.propertiesParallelismThreshold.setText(String.valueOf(((PoolCalculationHandler)getSelectedGenerator().calculationHandler).getParallelismThreshold()));
                 }
                 if  (!view.propertiesBox.getChildren().contains(view.propertiesParallelismThresholdBox)) {
