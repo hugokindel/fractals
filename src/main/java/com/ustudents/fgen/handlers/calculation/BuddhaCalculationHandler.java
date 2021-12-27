@@ -20,6 +20,7 @@ public abstract class BuddhaCalculationHandler extends CalculationHandler{
         super(fractal, complexPlane, maxIterations, radius);
     }
 
+    // genere une liste de coordonnées (x,y) aléatoires dans les limites de l'image
     protected ArrayList<Pair<Integer,Integer>> getRandomConstantList(int maxIterationsConstant, int width, int height, double offsetX, double offsetY){
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
@@ -36,6 +37,7 @@ public abstract class BuddhaCalculationHandler extends CalculationHandler{
         return list;
     }
 
+    // genere l'indice de divergence et la liste des Zn obtenu dans la boucle while
     protected Pair<Integer,ArrayList<Complex>> computeDivergenceIndexList(Complex z0, Function<Complex, Complex> f) {
         int n = 0;
         Complex zn = z0.clone();
