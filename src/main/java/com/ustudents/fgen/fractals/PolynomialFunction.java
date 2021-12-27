@@ -15,10 +15,10 @@ public class PolynomialFunction extends Fractal {
     public String f;
 
     @JsonSerializable(necessary = false)
-    public Complex c = new Complex(0, 0);
+    public boolean staticZ0 = false;
 
     @JsonSerializable(necessary = false)
-    public boolean staticZ0 = false;
+    public Complex c = new Complex(0, 0);
 
     public Function<PolynomialFunctionValues, Complex> function;
 
