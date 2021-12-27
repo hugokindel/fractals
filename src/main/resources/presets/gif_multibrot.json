@@ -2,21 +2,16 @@
 	"version": 1,
 	"generators": [
 		{
-			"name": "Gif Of Julia Colors Handlers",
+			"name": "Gif of Multiple Multibrot",
 			"class": "GifGenerator",
-			"path": "julia.gif",
+			"path": "multibrot.gif",
 			"msBetweenFrames": 500,
+			"aliasingType": "X1",
 			"imageHandlers": [
 				{
 					"class": "SimpleImageHandler",
 					"colorHandler": {
-						"class": "HsbColorHandler"
-					}
-				},
-				{
-					"class": "SimpleImageHandler",
-					"colorHandler": {
-						"class": "VeryRedColorHandler"
+						"class": "DarkPsychedelicColorHandler"
 					}
 				},
 				{
@@ -28,13 +23,25 @@
 				{
 					"class": "SimpleImageHandler",
 					"colorHandler": {
-						"class": "LightPsychedelicColorHandler"
+						"class": "DarkPsychedelicColorHandler"
 					}
 				},
 				{
 					"class": "SimpleImageHandler",
 					"colorHandler": {
-						"class": "BasicColorHandler"
+						"class": "DarkPsychedelicColorHandler"
+					}
+				},
+				{
+					"class": "SimpleImageHandler",
+					"colorHandler": {
+						"class": "DarkPsychedelicColorHandler"
+					}
+				},
+				{
+					"class": "SimpleImageHandler",
+					"colorHandler": {
+						"class": "DarkPsychedelicColorHandler"
 					}
 				}
 			],
@@ -42,11 +49,9 @@
 				{
 					"class": "PoolCalculationHandler",
 					"fractal": {
-						"class": "JuliaSet",
-						"c": {
-							"real": -0.7269,
-							"imaginary": 0.1889
-						}
+						"class": "PolynomialFunction",
+						"f": "z^2 + c",
+						"staticZ0": true
 					},
 					"plane": {
 						"start": {
@@ -57,7 +62,7 @@
 							"real": 1.0,
 							"imaginary": -1.0
 						},
-						"step": 0.001
+						"step": 0.003
 					},
 					"maxIterations": 1000,
 					"radius": 2
@@ -65,11 +70,9 @@
 				{
 					"class": "PoolCalculationHandler",
 					"fractal": {
-						"class": "JuliaSet",
-						"c": {
-							"real": -0.7269,
-							"imaginary": 0.1889
-						}
+						"class": "PolynomialFunction",
+						"f": "z^3 + c",
+						"staticZ0": true
 					},
 					"plane": {
 						"start": {
@@ -80,7 +83,7 @@
 							"real": 1.0,
 							"imaginary": -1.0
 						},
-						"step": 0.001
+						"step": 0.003
 					},
 					"maxIterations": 1000,
 					"radius": 2
@@ -88,11 +91,9 @@
 				{
 					"class": "PoolCalculationHandler",
 					"fractal": {
-						"class": "JuliaSet",
-						"c": {
-							"real": -0.7269,
-							"imaginary": 0.1889
-						}
+						"class": "PolynomialFunction",
+						"f": "z^4 + c",
+						"staticZ0": true
 					},
 					"plane": {
 						"start": {
@@ -103,7 +104,7 @@
 							"real": 1.0,
 							"imaginary": -1.0
 						},
-						"step": 0.001
+						"step": 0.003
 					},
 					"maxIterations": 1000,
 					"radius": 2
@@ -111,11 +112,9 @@
 				{
 					"class": "PoolCalculationHandler",
 					"fractal": {
-						"class": "JuliaSet",
-						"c": {
-							"real": -0.7269,
-							"imaginary": 0.1889
-						}
+						"class": "PolynomialFunction",
+						"f": "z^5 + c",
+						"staticZ0": true
 					},
 					"plane": {
 						"start": {
@@ -126,7 +125,7 @@
 							"real": 1.0,
 							"imaginary": -1.0
 						},
-						"step": 0.001
+						"step": 0.003
 					},
 					"maxIterations": 1000,
 					"radius": 2
@@ -134,11 +133,9 @@
 				{
 					"class": "PoolCalculationHandler",
 					"fractal": {
-						"class": "JuliaSet",
-						"c": {
-							"real": -0.7269,
-							"imaginary": 0.1889
-						}
+						"class": "PolynomialFunction",
+						"f": "z^6 + c",
+						"staticZ0": true
 					},
 					"plane": {
 						"start": {
@@ -149,7 +146,28 @@
 							"real": 1.0,
 							"imaginary": -1.0
 						},
-						"step": 0.001
+						"step": 0.003
+					},
+					"maxIterations": 1000,
+					"radius": 2
+				},
+				{
+					"class": "PoolCalculationHandler",
+					"fractal": {
+						"class": "PolynomialFunction",
+						"f": "z^96 + c",
+						"staticZ0": true
+					},
+					"plane": {
+						"start": {
+							"real": -1.0,
+							"imaginary": 1.0
+						},
+						"end": {
+							"real": 1.0,
+							"imaginary": -1.0
+						},
+						"step": 0.003
 					},
 					"maxIterations": 1000,
 					"radius": 2
