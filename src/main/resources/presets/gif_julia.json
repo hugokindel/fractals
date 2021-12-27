@@ -5,7 +5,7 @@
 			"name": "Gif Of Julia Colors Handlers",
 			"class": "GifGenerator",
 			"path": "gif_julia.gif",
-			"msBetweenFrames": 250,
+			"msBetweenFrames": 500,
 			"imageHandlers": [
 				{
 					"class": "SimpleImageHandler",
