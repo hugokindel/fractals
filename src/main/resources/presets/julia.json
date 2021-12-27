@@ -3,17 +3,21 @@
 	"generators": [
 		{
 			"class": "JpegGenerator",
-			"path": "mandelbrot.jpeg",
+			"path": "julia.jpeg",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "HsbColorHandler"
 				}
 			},
 			"calculationHandler": {
 				"class": "PoolCalculationHandler",
 				"fractal": {
-					"class": "MandelbrotSet"
+					"class": "JuliaSet",
+					"c": {
+						"real": -0.7269,
+						"imaginary": 0.1889
+					}
 				},
 				"plane": {
 					"start": {
@@ -29,8 +33,8 @@
 				"maxIterations": 1000,
 				"radius": 2
 			},
-			"width": 4096,
-			"height": 4096,
+			"width": 1024,
+			"height": 1024,
 			"offsetX": 0.0,
 			"offsetY": 0.0
 		}

@@ -3,7 +3,7 @@
 	"generators": [
 		{
 			"class": "JpegGenerator",
-			"path": "sample.jpeg",
+			"path": "polynomial_mandelbrot.jpeg",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
@@ -13,11 +13,9 @@
 			"calculationHandler": {
 				"class": "PoolCalculationHandler",
 				"fractal": {
-					"class": "JuliaSet",
-					"c": {
-						"real": -0.7269,
-						"imaginary": 0.1889
-					}
+					"class": "PolynomialFunction",
+					"f": "z^2 + c",
+					"staticZ0": true
 				},
 				"plane": {
 					"start": {

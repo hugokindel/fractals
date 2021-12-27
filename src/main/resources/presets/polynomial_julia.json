@@ -3,7 +3,7 @@
 	"generators": [
 		{
 			"class": "JpegGenerator",
-			"path": "polynomial.jpeg",
+			"path": "polynomial_julia.jpeg",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {

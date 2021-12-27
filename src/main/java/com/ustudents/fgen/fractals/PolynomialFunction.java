@@ -14,8 +14,11 @@ public class PolynomialFunction extends Fractal {
     @JsonSerializable
     public String f;
 
-    @JsonSerializable
-    public Complex c;
+    @JsonSerializable(necessary = false)
+    public Complex c = new Complex(0, 0);
+
+    @JsonSerializable(necessary = false)
+    public boolean staticZ0 = false;
 
     public Function<PolynomialFunctionValues, Complex> function;
 
@@ -26,11 +29,20 @@ public class PolynomialFunction extends Fractal {
 
     @Override
     public Complex getZ0(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY) {
+        if (staticZ0) {
+            return new Complex(0, 0);
+        }
+
         return new Complex(originX + plane.getStep() * (x - offsetX), originY - plane.getStep() * (y - offsetY));
     }
 
     @Override
     public Function<Complex, Complex> getF(ComplexPlane plane, double x, double y, double originX, double originY, double offsetX, double offsetY) {
+        if (staticZ0) {
+            Complex c = new Complex(originX + plane.getStep() * (x - offsetX), originY - plane.getStep() * (y - offsetY));
+            return z -> function.apply(new PolynomialFunctionValues(z, c));
+        }
+
         return z -> function.apply(new PolynomialFunctionValues(z, c));
     }
 }
