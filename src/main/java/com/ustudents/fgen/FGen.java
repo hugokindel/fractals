@@ -57,6 +57,10 @@ public class FGen extends Program {
         }
 
         if (type.equals("gui")) {
+            if (saveFilepath != null && loadedConfiguration != null) {
+                Json.serialize(saveFilepath, loadedConfiguration);
+            }
+
             Application.mainApplication(args);
         } else {
             if (loadedConfiguration != null) {
