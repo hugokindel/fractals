@@ -52,10 +52,14 @@ public class MainWindow extends Window {
     public ComboBox<AvailableAliasings> propertiesGeneratorAliasing = new ComboBox<>(FXCollections.observableArrayList(AvailableAliasings.values()));
     public HBox propertiesFractalBox = new HBox();
     public ComboBox<AvailableFractals> propertiesFractalType = new ComboBox<>(FXCollections.observableArrayList(AvailableFractals.values()));
-    public HBox propertiesFractalJuliaRealBox = new HBox();
-    public TextField propertiesFractalJuliaReal = new TextField();
-    public HBox propertiesFractalJuliaImaginaryBox = new HBox();
-    public TextField propertiesFractalJuliaImaginary = new TextField();
+    public HBox propertiesFractalPolynomialFunctionBox = new HBox();
+    public TextField propertiesFractalPolynomialFunction = new TextField();
+    public HBox propertiesFractalPolynomialFunctionStaticZ0Box = new HBox();
+    public CheckBox propertiesFractalPolynomialFunctionStaticZ0 = new CheckBox();
+    public HBox propertiesFractalComplexRealBox = new HBox();
+    public TextField propertiesFractalComplexReal = new TextField();
+    public HBox propertiesFractalComplexImaginaryBox = new HBox();
+    public TextField propertiesFractalComplexImaginary = new TextField();
     public TextField propertiesPlaneStartReal = new TextField();
     public TextField propertiesPlaneStartImaginary = new TextField();
     public TextField propertiesPlaneEndReal = new TextField();
@@ -329,35 +333,65 @@ public class MainWindow extends Window {
         }
 
         {
-            propertiesFractalJuliaRealBox.setPadding(new Insets(0, 0, 8, 0));
-            propertiesFractalJuliaRealBox.setAlignment(Pos.CENTER_LEFT);
+            propertiesFractalPolynomialFunctionBox.setPadding(new Insets(0, 0, 8, 0));
+            propertiesFractalPolynomialFunctionBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Function");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            propertiesFractalPolynomialFunctionBox.getChildren().add(label);
+
+            HBox.setHgrow(propertiesFractalPolynomialFunction, Priority.ALWAYS);
+            propertiesFractalPolynomialFunctionBox.getChildren().add(propertiesFractalPolynomialFunction);
+
+            propertiesBox.getChildren().add(propertiesFractalPolynomialFunctionBox);
+        }
+
+        {
+            propertiesFractalPolynomialFunctionStaticZ0Box.setPadding(new Insets(0, 0, 8, 0));
+            propertiesFractalPolynomialFunctionStaticZ0Box.setAlignment(Pos.CENTER_LEFT);
+
+            Label label = new Label("Set z0 = 0");
+            label.setMinWidth(130);
+            label.setPadding(new Insets(0, 10, 0, 0));
+            propertiesFractalPolynomialFunctionStaticZ0Box.getChildren().add(label);
+
+            HBox.setHgrow(propertiesFractalPolynomialFunctionStaticZ0, Priority.ALWAYS);
+            propertiesFractalPolynomialFunctionStaticZ0Box.getChildren().add(propertiesFractalPolynomialFunctionStaticZ0);
+
+            propertiesBox.getChildren().add(propertiesFractalPolynomialFunctionStaticZ0Box);
+        }
+
+        {
+            propertiesFractalComplexRealBox.setPadding(new Insets(0, 0, 8, 0));
+            propertiesFractalComplexRealBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Complex (Real)");
             label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
-            propertiesFractalJuliaRealBox.getChildren().add(label);
+            propertiesFractalComplexRealBox.getChildren().add(label);
 
-            HBox.setHgrow(propertiesFractalJuliaReal, Priority.ALWAYS);
-            propertiesFractalJuliaReal.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
-            propertiesFractalJuliaRealBox.getChildren().add(propertiesFractalJuliaReal);
+            HBox.setHgrow(propertiesFractalComplexReal, Priority.ALWAYS);
+            propertiesFractalComplexReal.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            propertiesFractalComplexRealBox.getChildren().add(propertiesFractalComplexReal);
 
-            propertiesBox.getChildren().add(propertiesFractalJuliaRealBox);
+            propertiesBox.getChildren().add(propertiesFractalComplexRealBox);
         }
 
         {
-            propertiesFractalJuliaImaginaryBox.setPadding(new Insets(0, 0, 8, 0));
-            propertiesFractalJuliaImaginaryBox.setAlignment(Pos.CENTER_LEFT);
+            propertiesFractalComplexImaginaryBox.setPadding(new Insets(0, 0, 8, 0));
+            propertiesFractalComplexImaginaryBox.setAlignment(Pos.CENTER_LEFT);
 
             Label label = new Label("Complex (Imaginary)");
             label.setMinWidth(130);
             label.setPadding(new Insets(0, 10, 0, 0));
-            propertiesFractalJuliaImaginaryBox.getChildren().add(label);
+            propertiesFractalComplexImaginaryBox.getChildren().add(label);
 
-            HBox.setHgrow(propertiesFractalJuliaImaginary, Priority.ALWAYS);
-            propertiesFractalJuliaImaginary.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
-            propertiesFractalJuliaImaginaryBox.getChildren().add(propertiesFractalJuliaImaginary);
+            HBox.setHgrow(propertiesFractalComplexImaginary, Priority.ALWAYS);
+            propertiesFractalComplexImaginary.setTextFormatter(new TextFormatter<String>(TextFieldUtil.doubleWithNegFilter));
+            propertiesFractalComplexImaginaryBox.getChildren().add(propertiesFractalComplexImaginary);
 
-            propertiesBox.getChildren().add(propertiesFractalJuliaImaginaryBox);
+            propertiesBox.getChildren().add(propertiesFractalComplexImaginaryBox);
         }
 
         {

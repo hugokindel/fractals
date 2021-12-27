@@ -22,9 +22,20 @@ public class PolynomialFunction extends Fractal {
 
     public Function<PolynomialFunctionValues, Complex> function;
 
+    public PolynomialFunction() {
+
+    }
+
+    public PolynomialFunction(String f, boolean staticZ0, Complex c) {
+        this.f = f;
+        this.staticZ0 = staticZ0;
+        this.c = c;
+        reloadFunction();
+    }
+
     @JsonSerializableConstructor
     public void deserialize() {
-        function = PolynomialFunctionParser.parse(f);
+        reloadFunction();
     }
 
     @Override
@@ -44,5 +55,16 @@ public class PolynomialFunction extends Fractal {
         }
 
         return z -> function.apply(new PolynomialFunctionValues(z, c));
+    }
+
+    public boolean reloadFunction() {
+        Function<PolynomialFunctionValues, Complex> function = PolynomialFunctionParser.parse(f);
+
+        if (function != null) {
+            this.function = function;
+            return true;
+        }
+
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.format.Configuration;
 import com.ustudents.fgen.fractals.JuliaSet;
+import com.ustudents.fgen.fractals.PolynomialFunction;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.generators.JpegGenerator;
 import com.ustudents.fgen.generators.PngGenerator;
@@ -153,7 +154,6 @@ public class MainWindowController {
         view.saveAsItem.setOnAction(e -> menuSaveAsAction());
 
         view.exportItem.setOnAction(e -> {
-            // TODO: Width, Height, Exporting popup
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Export Configuration Files");
             File file = directoryChooser.showDialog(Application.get().getCurrentStage());
@@ -415,12 +415,16 @@ public class MainWindowController {
             updateView();
         });
 
-        view.propertiesFractalJuliaReal.textProperty().addListener((observable, oldValue, newValue) -> {
+        view.propertiesFractalComplexReal.textProperty().addListener((observable, oldValue, newValue) -> {
             if (isUpdatingProperties) {
                 return;
             }
 
-            ((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real = Double.valueOf(newValue);
+            if (getSelectedGenerator().calculationHandler.fractal instanceof JuliaSet) {
+                ((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real = Double.valueOf(newValue);
+            } else {
+                ((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.real = Double.valueOf(newValue);
+            }
 
             if (task[0] != null) {
                 task[0].cancel();
@@ -436,12 +440,60 @@ public class MainWindowController {
             timer.schedule(task[0], delayTime);
         });
 
-        view.propertiesFractalJuliaImaginary.textProperty().addListener((observable, oldValue, newValue) -> {
+        view.propertiesFractalComplexImaginary.textProperty().addListener((observable, oldValue, newValue) -> {
             if (isUpdatingProperties) {
                 return;
             }
 
-            ((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary = Double.valueOf(newValue);
+            if (getSelectedGenerator().calculationHandler.fractal instanceof JuliaSet) {
+                ((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary = Double.valueOf(newValue);
+            } else {
+                ((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.imaginary = Double.valueOf(newValue);
+            }
+
+            if (task[0] != null) {
+                task[0].cancel();
+            }
+
+            task[0] = new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> updateView());
+                }
+            };
+
+            timer.schedule(task[0], delayTime);
+        });
+
+        view.propertiesFractalPolynomialFunction.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (isUpdatingProperties) {
+                return;
+            }
+
+            ((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).f = newValue;
+
+            if (task[0] != null) {
+                task[0].cancel();
+            }
+
+            task[0] = new TimerTask() {
+                @Override
+                public void run() {
+                    if (((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).reloadFunction()) {
+                        Platform.runLater(() -> updateView());
+                    }
+                }
+            };
+
+            timer.schedule(task[0], delayTime);
+        });
+
+        view.propertiesFractalPolynomialFunctionStaticZ0.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (isUpdatingProperties) {
+                return;
+            }
+
+            ((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).staticZ0 = newValue;
 
             if (task[0] != null) {
                 task[0].cancel();
@@ -728,21 +780,55 @@ public class MainWindowController {
             view.propertiesFractalType.setValue(AvailableFractals.fromFractal(getSelectedGenerator().calculationHandler.fractal));
 
             if (view.propertiesFractalType.getValue() == AvailableFractals.JULIA) {
-                if (!view.propertiesFractalJuliaReal.getText().equals(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real))) {
-                    view.propertiesFractalJuliaReal.setText(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real));
+                if (!view.propertiesFractalComplexReal.getText().equals(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real))) {
+                    view.propertiesFractalComplexReal.setText(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.real));
                 }
-                if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalJuliaRealBox)) {
-                    view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 1, view.propertiesFractalJuliaRealBox);
+                if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexRealBox)) {
+                    view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 1, view.propertiesFractalComplexRealBox);
                 }
-                if (!view.propertiesFractalJuliaImaginary.getText().equals(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary))) {
-                    view.propertiesFractalJuliaImaginary.setText(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary));
+                if (!view.propertiesFractalComplexImaginary.getText().equals(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary))) {
+                    view.propertiesFractalComplexImaginary.setText(String.valueOf(((JuliaSet)getSelectedGenerator().calculationHandler.fractal).c.imaginary));
                 }
-                if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalJuliaImaginaryBox)) {
-                    view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 2, view.propertiesFractalJuliaImaginaryBox);
+                if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexImaginaryBox)) {
+                    view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 2, view.propertiesFractalComplexImaginaryBox);
+                }
+                view.propertiesBox.getChildren().remove(view.propertiesFractalPolynomialFunctionBox);
+                view.propertiesBox.getChildren().remove(view.propertiesFractalPolynomialFunctionStaticZ0Box);
+            } else if (view.propertiesFractalType.getValue() == AvailableFractals.POLYNOMIAL_FUNCTION) {
+                if (!view.propertiesFractalPolynomialFunction.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).f))) {
+                    view.propertiesFractalPolynomialFunction.setText(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).f);
+                }
+                if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalPolynomialFunctionBox)) {
+                    view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 1, view.propertiesFractalPolynomialFunctionBox);
+                }
+                if (view.propertiesFractalPolynomialFunctionStaticZ0.isSelected() != ((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).staticZ0) {
+                    view.propertiesFractalPolynomialFunctionStaticZ0.setSelected(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).staticZ0);
+                }
+                if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalPolynomialFunctionStaticZ0Box)) {
+                    view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 2, view.propertiesFractalPolynomialFunctionStaticZ0Box);
+                }
+                if (!view.propertiesFractalPolynomialFunctionStaticZ0.isSelected()) {
+                    if (!view.propertiesFractalComplexReal.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.real))) {
+                        view.propertiesFractalComplexReal.setText(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.real));
+                    }
+                    if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexRealBox)) {
+                        view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 3, view.propertiesFractalComplexRealBox);
+                    }
+                    if (!view.propertiesFractalComplexImaginary.getText().equals(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.imaginary))) {
+                        view.propertiesFractalComplexImaginary.setText(String.valueOf(((PolynomialFunction)getSelectedGenerator().calculationHandler.fractal).c.imaginary));
+                    }
+                    if  (!view.propertiesBox.getChildren().contains(view.propertiesFractalComplexImaginaryBox)) {
+                        view.propertiesBox.getChildren().add(view.propertiesBox.getChildren().indexOf(view.propertiesFractalBox) + 4, view.propertiesFractalComplexImaginaryBox);
+                    }
+                } else {
+                    view.propertiesBox.getChildren().remove(view.propertiesFractalComplexRealBox);
+                    view.propertiesBox.getChildren().remove(view.propertiesFractalComplexImaginaryBox);
                 }
             } else {
-                view.propertiesBox.getChildren().remove(view.propertiesFractalJuliaRealBox);
-                view.propertiesBox.getChildren().remove(view.propertiesFractalJuliaImaginaryBox);
+                view.propertiesBox.getChildren().remove(view.propertiesFractalPolynomialFunctionBox);
+                view.propertiesBox.getChildren().remove(view.propertiesFractalPolynomialFunctionStaticZ0Box);
+                view.propertiesBox.getChildren().remove(view.propertiesFractalComplexRealBox);
+                view.propertiesBox.getChildren().remove(view.propertiesFractalComplexImaginaryBox);
             }
 
             if (!view.propertiesPlaneStartReal.getText().equals(String.valueOf(getSelectedGenerator().calculationHandler.plane.start.real))) {

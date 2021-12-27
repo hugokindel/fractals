@@ -12,7 +12,7 @@ public class PolynomialFunctionParser {
 
     private static void nextChar() {
         ch = (++pos < str.length()) ? str.charAt(pos) : 0;
-        while (ch == ' ') {
+        if (ch == ' ') {
             nextChar();
         }
     }
@@ -102,6 +102,7 @@ public class PolynomialFunctionParser {
 
     public static Function<PolynomialFunctionValues, Complex> parse(String string) {
         str = string;
+        pos = -1;
         return parse();
     }
 }
