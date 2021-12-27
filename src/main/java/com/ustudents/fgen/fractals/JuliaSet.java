@@ -6,6 +6,7 @@ import com.ustudents.fgen.maths.ComplexPlane;
 
 import java.util.function.Function;
 
+/** Represents a fractal of the Julia set. */
 @JsonSerializable(serializeClassName = true)
 public class JuliaSet extends Fractal {
     @JsonSerializable

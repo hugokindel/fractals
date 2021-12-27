@@ -77,8 +77,6 @@ public class SingleImageGenerator extends SingleMemoryGenerator {
         offsetX = oldOffsetX;
         offsetY = oldOffsetY;
 
-        Benchmark benchmark = new Benchmark();
         bufferedImage = imageHandler.fillImage(divergenceIndexes, calculationHandler.maxIterations, aliasingType);
-        FGen.imageHandlerDuration = FGen.imageHandlerDuration.plus(benchmark.end());
     }
 }

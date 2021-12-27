@@ -6,6 +6,7 @@ import com.ustudents.fgen.maths.ComplexPlane;
 
 import java.util.function.Function;
 
+/** Represents a fractal of the Mandelbrot set. */
 @JsonSerializable(serializeClassName = true)
 public class MandelbrotSet extends Fractal {
     public MandelbrotSet() {

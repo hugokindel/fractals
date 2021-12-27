@@ -3,11 +3,14 @@ package com.ustudents.fgen.maths;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 
+/** Represents a complex plane. */
 @JsonSerializable
 public class ComplexPlane {
+    /** The start of the plane. */
     @JsonSerializable
     public Complex start = null;
 
+    /** The end of the plane. */
     @JsonSerializable
     public Complex end = null;
 

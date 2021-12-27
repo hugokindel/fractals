@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Map;
 
+/** Image Handler used to compute colors of indexes within an image. */
 @JsonSerializable(serializeClassName = true)
 @SuppressWarnings("unchecked")
 public abstract class ImageHandler {

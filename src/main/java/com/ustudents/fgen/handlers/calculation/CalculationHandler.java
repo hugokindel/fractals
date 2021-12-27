@@ -12,6 +12,12 @@ import com.ustudents.fgen.maths.ComplexPlane;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Represents a calculation handler.
+ * This handler is used to compute a matrix of divergence indexes.
+ * This class is extended within multiple subclasses to do this computation in various different ways, in a attempt
+ * to search the most optimal way to compute those values.
+ */
 @JsonSerializable(serializeClassName = true)
 @SuppressWarnings("unchecked")
 public abstract class CalculationHandler {

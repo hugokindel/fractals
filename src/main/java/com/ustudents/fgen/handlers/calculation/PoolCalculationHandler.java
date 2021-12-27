@@ -11,6 +11,10 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.function.Function;
 
+/**
+ * Calculates the matrix of divergence indexes within a ForKJoinPool.
+ * Most optimized method available here.
+ */
 @JsonSerializable(serializeClassName = true)
 public class PoolCalculationHandler extends CalculationHandler {
     public static final int DEFAULT_PARALLELISM_THRESHOLD = 16192;

@@ -2,6 +2,7 @@ package com.ustudents.fgen.handlers.color;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
 
+/** Color Handler to be used to generate Buddha fractal. */
 @JsonSerializable(serializeClassName = true)
 public class BuddhaColorHandler implements ColorHandler {
     public int computeColor(int indexT, int maxIterations) {

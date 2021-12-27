@@ -4,6 +4,7 @@ import com.ustudents.fgen.common.json.JsonSerializable;
 
 import java.util.UUID;
 
+/** Defines a generator, a list of data that can be used to generate a fractal. */
 @JsonSerializable(serializeClassName = true)
 public abstract class Generator {
     @JsonSerializable(necessary = false)

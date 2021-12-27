@@ -1,10 +1,11 @@
 package com.ustudents.fgen.maths;
 
-import com.ustudents.fgen.fractals.Fractal;
-import javafx.util.Pair;
-
 import java.util.function.Function;
 
+/**
+ * Uses a recursive descent parser to parse a polynomial function from a string.
+ * A polynomial function can be for example of the given form `5z^7 + -2z^3 - 5z + c`.
+ */
 public class PolynomialFunctionParser {
     public static int pos = -1;
     public static char ch;
@@ -51,14 +52,7 @@ public class PolynomialFunctionParser {
         double power;
 
         if ((ch >= '0' && ch <= '9') || ch == '.' || ch == '+' || ch == '-') {
-            int startPos = pos;
-            if (ch == '+' || ch == '-') {
-                nextChar();
-            }
-            while ((ch >= '0' && ch <= '9') || ch == '.') {
-                nextChar();
-            }
-            multiplicator = Double.parseDouble(str.substring(startPos, pos));
+            multiplicator = parseNumber();
         } else if (ch == 'z' || ch == 'c') {
             multiplicator = 1;
         } else {
@@ -76,14 +70,7 @@ public class PolynomialFunctionParser {
             nextChar();
 
             if ((ch >= '0' && ch <= '9') || ch == '.' || ch == '+' || ch == '-') {
-                int startPos = pos;
-                if (ch == '+' || ch == '-') {
-                    nextChar();
-                }
-                while ((ch >= '0' && ch <= '9') || ch == '.') {
-                    nextChar();
-                }
-                power = Double.parseDouble(str.substring(startPos, pos));
+                power = parseNumber();
             } else {
                 return null;
             }
@@ -98,6 +85,20 @@ public class PolynomialFunctionParser {
         }
 
         return v -> new Complex(v.c.real, v.c.imaginary).pow(power).multiply(multiplicator);
+    }
+
+    private static double parseNumber() {
+        int startPos = pos;
+
+        if (ch == '+' || ch == '-') {
+            nextChar();
+        }
+
+        while ((ch >= '0' && ch <= '9') || ch == '.') {
+            nextChar();
+        }
+
+        return Double.parseDouble(str.substring(startPos, pos));
     }
 
     public static Function<PolynomialFunctionValues, Complex> parse(String string) {

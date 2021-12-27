@@ -2,11 +2,14 @@ package com.ustudents.fgen.maths;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
 
+/** Represents a complex number. */
 @JsonSerializable
 public class Complex implements Cloneable {
+    /** The real value. */
     @JsonSerializable
     public Double real = 0.;
 
+    /** The imaginary value. */
     @JsonSerializable
     public Double imaginary = 0.;
 
@@ -47,23 +50,23 @@ public class Complex implements Cloneable {
                 imaginary * factor);
     }
 
-    /* From Apache. */
+    /* Implementation from: https://commons.apache.org/proper/commons-math/javadocs/api-3.6/src-html/org/apache/commons/math3/complex/Complex.html */
     public Complex log() {
         return new Complex(Math.log(getModulus()), Math.atan2(imaginary, real));
     }
 
-    /* From Apache. */
+    /* Implementation from: https://commons.apache.org/proper/commons-math/javadocs/api-3.6/src-html/org/apache/commons/math3/complex/Complex.html */
     public Complex exp() {
         double expOfReal = Math.exp(real);
         return new Complex(expOfReal * Math.cos(imaginary), expOfReal * Math.sin(imaginary));
     }
 
-    /* From Apache. */
+    /* Implementation from: https://commons.apache.org/proper/commons-math/javadocs/api-3.6/src-html/org/apache/commons/math3/complex/Complex.html */
     public Complex pow(Complex factor) {
         return log().multiply(factor).exp();
     }
 
-    /* From Apache. */
+    /* Implementation from: https://commons.apache.org/proper/commons-math/javadocs/api-3.6/src-html/org/apache/commons/math3/complex/Complex.html */
     public Complex pow(double factor) {
         return log().multiply(factor).exp();
     }
@@ -93,10 +96,5 @@ public class Complex implements Cloneable {
         clone.imaginary = imaginary;
 
         return clone;
-    }
-
-    @Override
-    public String toString() {
-        return "Complex{real=" + real + ", imaginary=" + imaginary + "}";
     }
 }

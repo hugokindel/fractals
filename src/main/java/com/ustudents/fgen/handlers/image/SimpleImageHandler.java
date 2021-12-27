@@ -7,6 +7,7 @@ import com.ustudents.fgen.handlers.color.ColorHandler;
 
 import java.awt.image.BufferedImage;
 
+/** Compute color per indexes using a single thread. */
 @JsonSerializable(serializeClassName = true)
 public class SimpleImageHandler extends ImageHandler {
     public SimpleImageHandler() {

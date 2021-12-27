@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import static java.util.stream.IntStream.range;
 
+/** Compute the divergence indexes by using the Buddha method using a parallel stream. */
 @JsonSerializable(serializeClassName = true)
 public class BuddhaStreamCalculationHandler extends BuddhaCalculationHandler {
     public BuddhaStreamCalculationHandler() {
@@ -27,6 +28,7 @@ public class BuddhaStreamCalculationHandler extends BuddhaCalculationHandler {
         double originX = plane.getOriginX(width);
         double originY = plane.getOriginY(height);
         double step = plane.getStep();
+        /* Calculates 1000000 random coordinates (x, y) in the image's size limits. */
         ArrayList<Pair<Integer, Integer>> list = getRandomConstantList(1000000,width,height,offsetX,offsetY);
 
         list.stream()
@@ -39,13 +41,18 @@ public class BuddhaStreamCalculationHandler extends BuddhaCalculationHandler {
                             Function<Complex, Complex> f = fractal.getF(plane, x, y, originX, originY, offsetX, offsetY);
                             return computeDivergenceIndexList(z0, f);
                         })
+                /* For each coordinate, we calculate the associated complex in the plane. */
                 .forEach(
                         pAdd -> {
                             if (pAdd.getKey() >= maxIterations){
-                                for( Complex zAdd : pAdd.getValue()){
+                                for(Complex zAdd : pAdd.getValue()) {
+                                    /* Calculate the coordinates of the complex. */
                                     int xAdd = (int) (((zAdd.real - originX) / step) + offsetX);
                                     int yAdd = (int) ((((zAdd.imaginary - originY) * (-1)) / step) + offsetY);
-                                    if (xAdd >= 0 && xAdd < width && yAdd >= 0 && yAdd < height){
+
+                                    /* If those coordinates are part of our image. */
+                                    if (xAdd >= 0 && xAdd < width && yAdd >= 0 && yAdd < height) {
+                                        /* Increments the counter by 1 (they're all at 0 by default). */
                                         divergenceIndexes[yAdd][xAdd]++;
                                     }
                                 }

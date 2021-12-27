@@ -1,9 +1,6 @@
 package com.ustudents.fgen.generators;
 
-import com.ustudents.fgen.FGen;
-import com.ustudents.fgen.common.benchmark.Benchmark;
 import com.ustudents.fgen.common.json.JsonSerializable;
-import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.utils.GifSequenceWriter;
 
 import javax.imageio.stream.FileImageOutputStream;
@@ -11,6 +8,10 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+/**
+ Generates a gif of fractal generators.
+ Can currently be used in a config file through the CLI, but not available within the GUI.
+ */
 @JsonSerializable
 public class GifGenerator extends ListImageGenerator {
     @JsonSerializable
@@ -44,11 +45,9 @@ public class GifGenerator extends ListImageGenerator {
             ImageOutputStream output = new FileImageOutputStream(new File(path));
             GifSequenceWriter writer = new GifSequenceWriter(output, bufferedImages[0], msBetweenFrames, loopContinuously);
 
-            Benchmark benchmark = new Benchmark();
             for (BufferedImage bufferedImage : bufferedImages) {
                 writer.writeToSequence(bufferedImage);
             }
-            FGen.gifCreation = FGen.gifCreation.plus(benchmark.end());
 
             writer.close();
             output.close();

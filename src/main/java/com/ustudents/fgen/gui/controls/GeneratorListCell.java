@@ -1,10 +1,6 @@
 package com.ustudents.fgen.gui.controls;
 
-import com.ustudents.fgen.common.logs.Out;
-import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.generators.SingleImageGenerator;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContentDisplay;
@@ -14,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 // Implementation in part from: https://stackoverflow.com/questions/36436358/javafx-listview-edit-textfieldlistcell
+/** Represents a custom list cell implementation. */
 public class GeneratorListCell extends ListCell<SingleImageGenerator> {
     private final TextField textField = new TextField();
 

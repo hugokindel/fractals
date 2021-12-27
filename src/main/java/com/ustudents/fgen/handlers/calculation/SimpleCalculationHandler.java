@@ -7,6 +7,7 @@ import com.ustudents.fgen.maths.ComplexPlane;
 
 import java.util.function.Function;
 
+/** Calculates the matrix of divergence indexes in a single thread. */
 @JsonSerializable(serializeClassName = true)
 public class SimpleCalculationHandler extends CalculationHandler {
     public SimpleCalculationHandler() {

@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 
+/** View of the main window. */
 public class MainWindow extends Window {
     public BorderPane root = new BorderPane();
     public MenuBar menuBar = new MenuBar();

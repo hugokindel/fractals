@@ -2,6 +2,7 @@ package com.ustudents.fgen.handlers.color;
 
 import com.ustudents.fgen.common.json.JsonSerializable;
 
+/** Color Handler to generate color scheme composed of red variants. */
 @JsonSerializable(serializeClassName = true)
 public class VeryRedColorHandler implements ColorHandler {
     public int computeColor(int index,int maxIterations ) {

@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/** Controller for the main window (used to operate between the view and the model). */
 public class MainWindowController {
     public class PreviewService extends Service<Void> {
         public boolean isWorking = false;

@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
+/** Generates a Png from a fractal. */
 @JsonSerializable(serializeClassName = true)
 public class PngGenerator extends SingleImageGenerator {
     @JsonSerializable

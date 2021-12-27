@@ -8,6 +8,7 @@ import com.ustudents.fgen.handlers.color.ColorHandler;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.RecursiveAction;
 
+/** Compute color per indexes using a ForkJoinPool. */
 @JsonSerializable(serializeClassName = true)
 public class PoolImageHandler extends ImageHandler {
     public static final int DEFAULT_PARALLELISM_THRESHOLD = 4194304;

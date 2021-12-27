@@ -9,6 +9,7 @@ import com.ustudents.fgen.maths.PolynomialFunctionValues;
 
 import java.util.function.Function;
 
+/** Represents a fractal of any given valid Polynomial Function that can be parsed by this program. */
 @JsonSerializable
 public class PolynomialFunction extends Fractal {
     @JsonSerializable

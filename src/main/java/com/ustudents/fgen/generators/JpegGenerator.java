@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
+/** Generates a Jpeg of a fractal. */
 @JsonSerializable(serializeClassName = true)
 public class JpegGenerator extends SingleImageGenerator {
     @JsonSerializable

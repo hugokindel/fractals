@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 
 import java.util.Objects;
 
+/** View of the about window. */
 public class AboutWindow extends Window {
     GridPane root = new GridPane();
 

@@ -1,16 +1,18 @@
 package com.ustudents.fgen.handlers.calculation;
 
-import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.maths.Complex;
 import com.ustudents.fgen.maths.ComplexPlane;
 
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
 import static java.util.stream.IntStream.range;
 
+/**
+ * Calculates the matrix of divergence indexes by using a parallel stream.
+ * Performance close to the ForkJoinPool (although generally a bit beneath).
+ */
 @JsonSerializable(serializeClassName = true)
 public class StreamCalculationHandler extends CalculationHandler {
     public StreamCalculationHandler() {

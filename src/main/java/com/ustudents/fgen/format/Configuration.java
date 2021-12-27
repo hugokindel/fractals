@@ -10,12 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ A Configuration file format.
+ Represents the main data type used by our program.
+ It represents a list of generators (data to generate a precise fractal as an image).
+ */
 @JsonSerializable
 @SuppressWarnings("unchecked")
 public class Configuration {
+    /** Version number (in case new format were to be introduced, for retro-compatibility purposes). */
     @JsonSerializable
     public Integer version = 1;
 
+    /** The list of generators available. */
     @JsonSerializable(type = JsonSerializableType.SerializableOnly)
     public List<Generator> generators = new ArrayList<>();
 

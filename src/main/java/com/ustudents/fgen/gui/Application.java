@@ -6,10 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.Objects;
 
+/** Main Stage of the GUI. */
 public class Application extends javafx.application.Application {
     private final Image WINDOW_ICON = new Image(Objects.requireNonNull(FGen.class.getResourceAsStream("/icon.png")));
 
