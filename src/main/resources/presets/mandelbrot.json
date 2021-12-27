@@ -2,12 +2,13 @@
 	"version": 1,
 	"generators": [
 		{
+			"name": "Mandelbrot",
 			"class": "JpegGenerator",
 			"path": "mandelbrot.jpeg",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "BasicColorHandler"
 				}
 			},
 			"calculationHandler": {

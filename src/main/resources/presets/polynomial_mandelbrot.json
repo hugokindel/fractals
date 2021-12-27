@@ -2,6 +2,7 @@
 	"version": 1,
 	"generators": [
 		{
+			"name": "Polynomial Mandelbrot",
 			"class": "JpegGenerator",
 			"path": "polynomial_mandelbrot.jpeg",
 			"imageHandler": {

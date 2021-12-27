@@ -2,13 +2,14 @@
 	"version": 1,
 	"generators": [
 		{
+			"name": "Aliasing X1",
 			"class": "PngGenerator",
 			"path": "x1.png",
 			"aliasingType": "X1",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "BasicColorHandler"
 				}
 			},
 			"calculationHandler": {
@@ -40,13 +41,14 @@
 			"offsetY": 0.0
 		},
 		{
+			"name": "Aliasing X2",
 			"class": "PngGenerator",
 			"path": "x2.png",
 			"aliasingType": "X2",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "BasicColorHandler"
 				}
 			},
 			"calculationHandler": {
@@ -78,13 +80,14 @@
 			"offsetY": 0.0
 		},
 		{
+			"name": "Aliasing X4",
 			"class": "PngGenerator",
 			"path": "x4.png",
 			"aliasingType": "X4",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "BasicColorHandler"
 				}
 			},
 			"calculationHandler": {
@@ -116,13 +119,14 @@
 			"offsetY": 0.0
 		},
 		{
+			"name": "Aliasing X8",
 			"class": "PngGenerator",
 			"path": "x8.png",
 			"aliasingType": "X8",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "BasicColorHandler"
 				}
 			},
 			"calculationHandler": {
@@ -154,13 +158,14 @@
 			"offsetY": 0.0
 		},
 		{
+			"name": "Aliasing X16",
 			"class": "PngGenerator",
 			"path": "x16.png",
 			"aliasingType": "X16",
 			"imageHandler": {
 				"class": "SimpleImageHandler",
 				"colorHandler": {
-					"class": "FullColorHandler"
+					"class": "BasicColorHandler"
 				}
 			},
 			"calculationHandler": {

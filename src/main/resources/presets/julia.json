@@ -2,6 +2,7 @@
 	"version": 1,
 	"generators": [
 		{
+			"name": "Julia",
 			"class": "JpegGenerator",
 			"path": "julia.jpeg",
 			"imageHandler": {

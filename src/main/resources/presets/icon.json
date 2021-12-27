@@ -2,6 +2,7 @@
 	"version": 1,
 	"generators": [
 		{
+			"name": "FGen Icon",
 			"class": "PngGenerator",
 			"path": "icon.png",
 			"aliasingType": "X4",

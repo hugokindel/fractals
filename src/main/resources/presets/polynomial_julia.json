@@ -2,6 +2,7 @@
 	"version": 1,
 	"generators": [
 		{
+			"name": "Polynomial Julia",
 			"class": "JpegGenerator",
 			"path": "polynomial_julia.jpeg",
 			"imageHandler": {
