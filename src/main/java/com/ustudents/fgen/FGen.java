@@ -22,7 +22,7 @@ public class FGen extends Program {
     @Option(names = {"-f", "--load-file"}, description = "Loads and run a configuration file stored at <filepath>.", usage = "<filepath>")
     public String loadFilepath = null;
 
-    @Option(names = {"-p", "--load-preset"}, description = "Loads and run a configuration preset file.", usage = "\"sample\", \"icon\", \"aa\" or \"mandelbrot\"")
+    @Option(names = {"-p", "--load-preset"}, description = "Loads and run a configuration preset file.", usage = "\"julia\", \"mandelbrot\", \"buddhabrot\", \"multibrot\", \"anti_aliasing\", \"icon\", \"gif_julia\", \"gif_multibrot\", \"polynomial_julia\" or \"polynomial_mandelbrot\"")
     public String presetName = null;
 
     @Option(names = {"-s", "--save"}, description = "Defines a filepath to save the loaded configuration.", usage = "<filepath>")
