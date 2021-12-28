@@ -36,7 +36,7 @@ Tree of the most important files and folder in the project's repository hierarch
 ├─┬─src/: Source code.
 │ └─┬─main/: Main package.
 │   ├─┬─java/com/ustudents/fgen/: Program source code.
-│   │ ├─┬─common/: The common source code (which could be useful as a library for other projects).
+│   │ ├─┬─common/: The common source code (useful for other projects).
 │   │ │ └─┬─benchmark/: Benchmark system.
 │   │ │   ├─json/: JSON parser.
 │   │ │   ├─logs/: Logging system.
