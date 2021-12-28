@@ -5,7 +5,6 @@ import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.common.logs.Out;
 import com.ustudents.fgen.common.options.Command;
 import com.ustudents.fgen.common.options.Option;
-import com.ustudents.fgen.format.Configuration;
 import com.ustudents.fgen.generators.Generator;
 import com.ustudents.fgen.gui.Application;
 

@@ -5,7 +5,7 @@ import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 import com.ustudents.fgen.common.json.JsonSerializableType;
 import com.ustudents.fgen.common.utils.ColorUtil;
-import com.ustudents.fgen.format.AliasingType;
+import com.ustudents.fgen.common.utils.AliasingType;
 import com.ustudents.fgen.handlers.color.ColorHandler;
 
 import java.awt.image.BufferedImage;

@@ -33,7 +33,6 @@ dependencies {
         }
     }
 
-    val jUnitVersion: String by project
     val javaFxVersion: String by project
 
     implementation("org.openjfx:javafx-base:$javaFxVersion:$platform")
@@ -41,8 +40,6 @@ dependencies {
     implementation("org.openjfx:javafx-controls:$javaFxVersion:$platform")
     implementation("org.openjfx:javafx-graphics:$javaFxVersion:$platform")
     implementation("org.openjfx:javafx-fxml:$javaFxVersion:$platform")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
 }
 
 tasks {

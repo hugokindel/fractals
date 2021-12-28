@@ -1,12 +1,10 @@
 package com.ustudents.fgen.generators;
 
-import com.ustudents.fgen.FGen;
-import com.ustudents.fgen.common.benchmark.Benchmark;
 import com.ustudents.fgen.common.json.Json;
 import com.ustudents.fgen.common.json.JsonSerializable;
 import com.ustudents.fgen.common.json.JsonSerializableConstructor;
 import com.ustudents.fgen.common.json.JsonSerializableType;
-import com.ustudents.fgen.format.AliasingType;
+import com.ustudents.fgen.common.utils.AliasingType;
 import com.ustudents.fgen.handlers.calculation.CalculationHandler;
 import com.ustudents.fgen.handlers.image.ImageHandler;
 

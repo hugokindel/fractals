@@ -1,7 +1,6 @@
 package com.ustudents.fgen.gui.views.types;
 
-import com.ustudents.fgen.format.AliasingType;
-import com.ustudents.fgen.handlers.color.*;
+import com.ustudents.fgen.common.utils.AliasingType;
 
 public enum AvailableAliasings {
     X1("x1"),

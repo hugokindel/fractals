@@ -1,6 +1,5 @@
 package com.ustudents.fgen.gui.views.types;
 
-import com.ustudents.fgen.format.AliasingType;
 import com.ustudents.fgen.fractals.Fractal;
 import com.ustudents.fgen.fractals.JuliaSet;
 import com.ustudents.fgen.fractals.MandelbrotSet;

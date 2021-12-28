@@ -2,8 +2,7 @@ package com.ustudents.fgen.gui.controller;
 
 import com.ustudents.fgen.FGen;
 import com.ustudents.fgen.common.json.Json;
-import com.ustudents.fgen.common.logs.Out;
-import com.ustudents.fgen.format.Configuration;
+import com.ustudents.fgen.Configuration;
 import com.ustudents.fgen.fractals.JuliaSet;
 import com.ustudents.fgen.fractals.PolynomialFunction;
 import com.ustudents.fgen.generators.Generator;
